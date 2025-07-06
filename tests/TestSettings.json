@@ -1,0 +1,12 @@
+{
+  "TrainChecker": {
+    "DepartureStation": "TEST_DEP",
+    "ArrivalStation": "TEST_ARR",
+    "ApiKey": "test-api-key",
+    "Platform": "1"
+  },
+  "Telegram": {
+    "BotToken": "test-bot-token",
+    "ChatId": "test-chat-id"
+  }
+}
