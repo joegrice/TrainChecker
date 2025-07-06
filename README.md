@@ -19,6 +19,8 @@ Example `appsettings.json` configuration:
   "TrainChecker": {
     "DepartureStation": "CHE",
     "ArrivalStation": "VIC",
+    "ReverseDepartureStation": "VIC",
+    "ReverseArrivalStation": "CHE",
     "Time": "07:30",
     "ApiKey": "YOUR_API_KEY"
   },
@@ -28,6 +30,9 @@ Example `appsettings.json` configuration:
   }
 }
 ```
+
+The `TrainChecker:ApiKey` is used to access the train information service. You can find the API documentation at: [https://huxley2.azurewebsites.net/](https://huxley2.azurewebsites.net/)
+
 
 ## Running the Application
 

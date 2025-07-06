@@ -23,7 +23,16 @@ public class TrainCheckJob : IJob
     {
         try
         {
-            await _trainService.GetAndSendTrainStatusAsync();
+            var departureStation = context.JobDetail.JobDataMap.GetString("DepartureStation");
+            var arrivalStation = context.JobDetail.JobDataMap.GetString("ArrivalStation");
+
+            if (string.IsNullOrEmpty(departureStation) || string.IsNullOrEmpty(arrivalStation))
+            {
+                _logger.LogError("Departure or arrival station not provided for TrainCheckJob.");
+                return;
+            }
+
+            await _trainService.GetAndSendTrainStatusAsync(departureStation, arrivalStation);
         }
         catch (Exception ex)
         {

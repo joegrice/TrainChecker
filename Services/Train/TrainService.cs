@@ -16,9 +16,9 @@ public class TrainService : ITrainService
         _telegramService = telegramService;
     }
 
-    public async Task<HuxleyResponse?> GetAndSendTrainStatusAsync()
+    public async Task<HuxleyResponse?> GetAndSendTrainStatusAsync(string departureStation, string arrivalStation)
     {
-        var huxleyResponse = await _nationalRailService.GetTrainStatusAsync(DateTime.Now.ToString("HH:mm"));
+        var huxleyResponse = await _nationalRailService.GetTrainStatusAsync(DateTime.Now.ToString("HH:mm"), departureStation, arrivalStation);
         if (huxleyResponse?.TrainServices != null)
         {
             var message = new StringBuilder();

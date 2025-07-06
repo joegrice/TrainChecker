@@ -16,12 +16,29 @@ builder.Services.Configure<TelegramOptions>(builder.Configuration.GetSection(Tel
 
 builder.Services.AddQuartz(q =>
 {
-    var jobKey = new JobKey("TrainCheckJob");
-    q.AddJob<TrainCheckJob>(opts => opts.WithIdentity(jobKey));
+    var forwardJobKey = new JobKey("TrainCheckJobForward");
+    q.AddJob<TrainCheckJob>(opts => opts
+        .WithIdentity(forwardJobKey)
+        .UsingJobData("DepartureStation", builder.Configuration["TrainChecker:DepartureStation"])
+        .UsingJobData("ArrivalStation", builder.Configuration["TrainChecker:ArrivalStation"]));
     q.AddTrigger(opts => opts
-        .ForJob(jobKey)
-        .WithIdentity("TrainCheckJob-trigger")
+        .ForJob(forwardJobKey)
+        .WithIdentity("TrainCheckJobForward-trigger")
         .WithCronSchedule("0 30 7 ? * MON-FRI *"));
+
+    var reverseJobKey = new JobKey("TrainCheckJobReverse");
+    q.AddJob<TrainCheckJob>(opts => opts
+        .WithIdentity(reverseJobKey)
+        .UsingJobData("DepartureStation", builder.Configuration["TrainChecker:ReverseDepartureStation"])
+        .UsingJobData("ArrivalStation", builder.Configuration["TrainChecker:ReverseArrivalStation"]));
+    q.AddTrigger(opts => opts
+        .ForJob(reverseJobKey)
+        .WithIdentity("TrainCheckJobReverse-5pm-trigger")
+        .WithCronSchedule("0 0 17 ? * MON-FRI *"));
+    q.AddTrigger(opts => opts
+        .ForJob(reverseJobKey)
+        .WithIdentity("TrainCheckJobReverse-530pm-trigger")
+        .WithCronSchedule("0 30 17 ? * MON-FRI *"));
 });
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
