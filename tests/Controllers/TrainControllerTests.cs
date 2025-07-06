@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using TrainChecker.Configuration;
 using TrainChecker.Controllers;
 using TrainChecker.Models;
-using TrainChecker.Options;
 using TrainChecker.Services.Train;
 using Xunit;
 using MsOptions = Microsoft.Extensions.Options.Options;

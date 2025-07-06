@@ -3,8 +3,8 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
+using TrainChecker.Configuration;
 using TrainChecker.Models;
-using TrainChecker.Options;
 using TrainChecker.Services.NationalRail;
 using Xunit;
 using MsOptions = Microsoft.Extensions.Options.Options;
@@ -47,7 +47,7 @@ public class NationalRailServiceTests
             Crs = "LDN",
             TrainServices = new[]
             {
-                new TrainChecker.Models.TrainService
+                new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "On time",

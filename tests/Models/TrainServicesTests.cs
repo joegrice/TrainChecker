@@ -16,7 +16,7 @@ public class TrainServicesTests
             Crs = "EUS",
             TrainServices = new[]
             {
-                new TrainChecker.Models.TrainService
+                new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "On time",
@@ -51,7 +51,7 @@ public class TrainServicesTests
     public void TrainService_WithNullOriginAndDestination_HandlesGracefully()
     {
         // Arrange
-        var trainService = new TrainChecker.Models.TrainService
+        var trainService = new TrainService
         {
             ScheduledTimeOfDeparture = "08:30",
             EstimatedTimeOfDeparture = "On time",
@@ -72,7 +72,7 @@ public class TrainServicesTests
     public void TrainService_WithEmptyOriginAndDestination_HandlesGracefully()
     {
         // Arrange
-        var trainService = new TrainChecker.Models.TrainService
+        var trainService = new TrainService
         {
             ScheduledTimeOfDeparture = "08:30",
             EstimatedTimeOfDeparture = "On time",
@@ -122,7 +122,7 @@ public class TrainServicesTests
     public void TrainService_WithAllNullProperties_HandlesGracefully()
     {
         // Arrange & Act
-        var trainService = new TrainChecker.Models.TrainService();
+        var trainService = new TrainService();
 
         // Assert
         Assert.Null(trainService.ScheduledTimeOfDeparture);
@@ -143,7 +143,7 @@ public class TrainServicesTests
             Crs = "TST",
             TrainServices = new[]
             {
-                new TrainChecker.Models.TrainService
+                new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "On time",

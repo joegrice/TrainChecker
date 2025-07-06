@@ -1,8 +1,8 @@
 using Quartz;
+using TrainChecker.Configuration;
+using TrainChecker.Jobs;
 using TrainChecker.Services.NationalRail;
 using TrainChecker.Services.Telegram;
-using TrainChecker.Options;
-using TrainChecker.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,4 +50,7 @@ app.MapControllers();
 
 app.Run();
 
-public partial class Program { }
+namespace TrainChecker
+{
+    public partial class Program { }
+}

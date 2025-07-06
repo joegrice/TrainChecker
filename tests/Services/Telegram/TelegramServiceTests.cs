@@ -1,11 +1,11 @@
 using System.Net;
 using System.Text;
+using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
-using TrainChecker.Options;
+using TrainChecker.Configuration;
 using TrainChecker.Services.Telegram;
 using Xunit;
-using MsOptions = Microsoft.Extensions.Options.Options;
 
 namespace TrainChecker.Tests.Services.Telegram;
 
@@ -25,7 +25,7 @@ public class TelegramServiceTests
         };
 
         var httpClient = new HttpClient(_mockHttpMessageHandler.Object);
-        var optionsWrapper = MsOptions.Create(_options);
+        var optionsWrapper = Options.Create(_options);
         
         _telegramService = new TelegramService(httpClient, optionsWrapper);
     }
@@ -115,7 +115,7 @@ public class TelegramServiceTests
     {
         // Arrange & Act
         var httpClient = new HttpClient();
-        var optionsWrapper = MsOptions.Create(_options);
+        var optionsWrapper = Options.Create(_options);
         var service = new TelegramService(httpClient, optionsWrapper);
 
         // Assert

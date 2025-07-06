@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
-using TrainChecker.Options;
+using TrainChecker.Configuration;
 using TrainChecker.Models;
 
 namespace TrainChecker.Services.NationalRail;

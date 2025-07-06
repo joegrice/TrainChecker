@@ -30,7 +30,7 @@ public class TrainServiceTests
             LocationName = "London",
             TrainServices = new[]
             {
-                new TrainChecker.Models.TrainService
+                new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "On time",
@@ -72,7 +72,7 @@ public class TrainServiceTests
         {
             TrainServices = new[]
             {
-                new TrainChecker.Models.TrainService
+                new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "08:45",
@@ -107,7 +107,7 @@ public class TrainServiceTests
         {
             TrainServices = new[]
             {
-                new TrainChecker.Models.TrainService
+                new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "Cancelled",
@@ -185,7 +185,7 @@ public class TrainServiceTests
         {
             TrainServices = new[]
             {
-                new TrainChecker.Models.TrainService
+                new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "On time",

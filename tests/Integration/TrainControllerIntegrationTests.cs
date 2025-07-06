@@ -34,7 +34,7 @@ public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFacto
             Crs = "EUS",
             TrainServices = new[]
             {
-                new TrainChecker.Models.TrainService
+                new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "On time",

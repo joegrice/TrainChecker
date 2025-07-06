@@ -1,6 +1,6 @@
 using System.Text;
 using Microsoft.Extensions.Options;
-using TrainChecker.Options;
+using TrainChecker.Configuration;
 
 namespace TrainChecker.Services.Telegram;
 

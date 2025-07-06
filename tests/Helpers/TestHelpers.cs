@@ -9,11 +9,11 @@ public static class TestHelpers
         string crs = "EUS",
         int numberOfServices = 1)
     {
-        var trainServices = new List<TrainChecker.Models.TrainService>();
+        var trainServices = new List<TrainService>();
         
         for (int i = 0; i < numberOfServices; i++)
         {
-            trainServices.Add(new TrainChecker.Models.TrainService
+            trainServices.Add(new TrainService
             {
                 ScheduledTimeOfDeparture = $"0{8 + i}:30",
                 EstimatedTimeOfDeparture = (i % 3) switch
@@ -37,14 +37,14 @@ public static class TestHelpers
         };
     }
 
-    public static TrainChecker.Models.TrainService CreateSampleTrainService(
+    public static TrainService CreateSampleTrainService(
         string scheduledTime = "08:30",
         string estimatedTime = "On time",
         string platform = "1",
         string originName = "London Euston",
         string destinationName = "Birmingham New Street")
     {
-        return new TrainChecker.Models.TrainService
+        return new TrainService
         {
             ScheduledTimeOfDeparture = scheduledTime,
             EstimatedTimeOfDeparture = estimatedTime,
@@ -72,7 +72,7 @@ public static class TestHelpers
         {
             LocationName = "Test Station",
             Crs = "TST",
-            TrainServices = Array.Empty<TrainChecker.Models.TrainService>()
+            TrainServices = Array.Empty<TrainService>()
         };
     }
 
@@ -86,13 +86,13 @@ public static class TestHelpers
         };
     }
 
-    public static TrainChecker.Models.TrainService CreateDelayedTrainService(
+    public static TrainService CreateDelayedTrainService(
         int delayMinutes = 15)
     {
         var scheduledTime = TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(30));
         var delayedTime = scheduledTime.Add(TimeSpan.FromMinutes(delayMinutes));
 
-        return new TrainChecker.Models.TrainService
+        return new TrainService
         {
             ScheduledTimeOfDeparture = scheduledTime.ToString(@"hh\:mm"),
             EstimatedTimeOfDeparture = delayedTime.ToString(@"hh\:mm"),
@@ -103,9 +103,9 @@ public static class TestHelpers
         };
     }
 
-    public static TrainChecker.Models.TrainService CreateCancelledTrainService()
+    public static TrainService CreateCancelledTrainService()
     {
-        return new TrainChecker.Models.TrainService
+        return new TrainService
         {
             ScheduledTimeOfDeparture = "08:30",
             EstimatedTimeOfDeparture = "Cancelled",
@@ -117,7 +117,7 @@ public static class TestHelpers
     }
 
     public static string CreateExpectedTelegramMessage(
-        TrainChecker.Models.TrainService trainService)
+        TrainService trainService)
     {
         var origin = trainService.Origin?.FirstOrDefault()?.LocationName ?? "Unknown";
         var destination = trainService.Destination?.FirstOrDefault()?.LocationName ?? "Unknown";

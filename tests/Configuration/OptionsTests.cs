@@ -1,7 +1,7 @@
-using TrainChecker.Options;
+using TrainChecker.Configuration;
 using Xunit;
 
-namespace TrainChecker.Tests.Options;
+namespace TrainChecker.Tests.Configuration;
 
 public class OptionsTests
 {

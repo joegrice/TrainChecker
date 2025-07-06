@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Options;
 using Quartz;
-using TrainChecker.Options;
+using TrainChecker.Configuration;
 using TrainChecker.Services.Train;
 
 namespace TrainChecker.Jobs;

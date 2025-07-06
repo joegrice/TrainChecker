@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using Quartz;
+using TrainChecker.Configuration;
 using TrainChecker.Jobs;
 using TrainChecker.Models;
-using TrainChecker.Options;
 using TrainChecker.Services.Train;
 using Xunit;
 using MsOptions = Microsoft.Extensions.Options.Options;
