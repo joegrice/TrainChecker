@@ -20,9 +20,9 @@ public class NationalRailService
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     }
 
-    public async Task<string> GetTrainStatusAsync()
+    public async Task<IEnumerable<TrainService>> GetTrainStatusAsync()
     {
-        var requestUri = $"/departures/{_options.DepartureStation}/to/{_options.ArrivalStation}/1?accessToken={_options.ApiKey}&time={_options.Time}";
+        var requestUri = $"/departures/{_options.DepartureStation}/to/{_options.ArrivalStation}?accessToken={_options.ApiKey}&time={_options.Time}&timeWindow=60";
         _logger.LogInformation("Requesting train status from: {BaseAddress}{RequestUri}", _httpClient.BaseAddress, requestUri);
         
         var response = await _httpClient.GetAsync(requestUri);
@@ -37,13 +37,6 @@ public class NationalRailService
         var content = await response.Content.ReadAsStringAsync();
         var huxleyResponse = JsonSerializer.Deserialize<HuxleyResponse>(content);
 
-        if (!(huxleyResponse?.TrainServices?.Length > 0))
-        {
-            return "No services found";
-        }
-        
-        var firstTrain = huxleyResponse.TrainServices[0];
-        var etd = firstTrain.EstimatedTimeOfDeparture;
-        return etd ?? "On time";
+        return huxleyResponse?.TrainServices ?? Enumerable.Empty<TrainService>();
     }
 }

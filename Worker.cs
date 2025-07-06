@@ -1,8 +1,16 @@
 namespace TrainChecker;
 
-public class Worker(ILogger<Worker> logger, NationalRailService nationalRailService)
-    : BackgroundService
+public class Worker : BackgroundService
 {
+    private readonly ILogger<Worker> _logger;
+    private readonly NationalRailService _nationalRailService;
+
+    public Worker(ILogger<Worker> logger, NationalRailService nationalRailService)
+    {
+        _logger = logger;
+        _nationalRailService = nationalRailService;
+    }
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
@@ -11,27 +19,30 @@ public class Worker(ILogger<Worker> logger, NationalRailService nationalRailServ
             {
                 try
                 {
-                    var status = await nationalRailService.GetTrainStatusAsync();
-                    logger.LogInformation("Train status: {status}", status);
+                    var trainServices = await _nationalRailService.GetTrainStatusAsync();
+                    foreach (var trainService in trainServices)
+                    {
+                        _logger.LogInformation("Train at {std} is {etd}", trainService.ScheduledTimeOfDeparture, trainService.EstimatedTimeOfDeparture);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "Error checking train status.");
+                    _logger.LogError(ex, "Error checking train status.");
                 }
             }
             await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
         }
     }
 
-    private static bool IsWeekday()
+    private bool IsWeekday()
     {
         var today = DateTime.Now.DayOfWeek;
-        return today is >= DayOfWeek.Monday and <= DayOfWeek.Friday;
+        return today >= DayOfWeek.Monday && today <= DayOfWeek.Friday;
     }
 
-    private static bool IsTimeToCheck()
+    private bool IsTimeToCheck()
     {
         var now = DateTime.Now;
-        return now is { Hour: 7, Minute: 30 };
+        return now.Hour == 7 && now.Minute == 30;
     }
 }
