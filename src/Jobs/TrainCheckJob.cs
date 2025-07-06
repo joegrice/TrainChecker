@@ -6,18 +6,13 @@ using TrainChecker.Services.Train;
 namespace TrainChecker.Jobs;
 
 [DisallowConcurrentExecution]
-public class TrainCheckJob : IJob
+public class TrainCheckJob(
+    ILogger<TrainCheckJob> logger,
+    ITrainService trainService,
+    IOptions<TrainCheckerOptions> options)
+    : IJob
 {
-    private readonly ILogger<TrainCheckJob> _logger;
-    private readonly ITrainService _trainService;
-    private readonly TrainCheckerOptions _options;
-
-    public TrainCheckJob(ILogger<TrainCheckJob> logger, ITrainService trainService, IOptions<TrainCheckerOptions> options)
-    {
-        _logger = logger;
-        _trainService = trainService;
-        _options = options.Value;
-    }
+    private readonly TrainCheckerOptions _options = options.Value;
 
     public async Task Execute(IJobExecutionContext context)
     {
@@ -28,15 +23,15 @@ public class TrainCheckJob : IJob
 
             if (string.IsNullOrEmpty(departureStation) || string.IsNullOrEmpty(arrivalStation))
             {
-                _logger.LogError("Departure or arrival station not provided for TrainCheckJob.");
+                logger.LogError("Departure or arrival station not provided for TrainCheckJob.");
                 return;
             }
 
-            await _trainService.GetAndSendTrainStatusAsync(departureStation, arrivalStation);
+            await trainService.GetAndSendTrainStatusAsync(departureStation, arrivalStation);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error checking train status.");
+            logger.LogError(ex, "Error checking train status.");
         }
     }
 }

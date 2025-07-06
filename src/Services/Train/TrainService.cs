@@ -5,24 +5,16 @@ using TrainChecker.Models;
 
 namespace TrainChecker.Services.Train;
 
-public class TrainService : ITrainService
+public class TrainService(INationalRailService nationalRailService, ITelegramService telegramService)
+    : ITrainService
 {
-    private readonly INationalRailService _nationalRailService;
-    private readonly ITelegramService _telegramService;
-
-    public TrainService(INationalRailService nationalRailService, ITelegramService telegramService)
-    {
-        _nationalRailService = nationalRailService;
-        _telegramService = telegramService;
-    }
-
     public async Task<HuxleyResponse?> GetAndSendTrainStatusAsync(string departureStation, string arrivalStation)
     {
-        var huxleyResponse = await _nationalRailService.GetTrainStatusAsync(DateTime.Now.ToString("HH:mm"), departureStation, arrivalStation);
+        var huxleyResponse = await nationalRailService.GetTrainStatusAsync(DateTime.Now.ToString("HH:mm"), departureStation, arrivalStation);
         if (huxleyResponse?.TrainServices != null)
         {
             var message = new StringBuilder();
-            message.AppendLine("*Train Status Update*");
+            message.AppendLine($"*Train Status Update for {huxleyResponse.LocationName}*");
             foreach (var trainService in huxleyResponse.TrainServices)
             {
                 var origin = trainService.Origin?.FirstOrDefault()?.LocationName ?? "Unknown";
@@ -45,9 +37,9 @@ public class TrainService : ITrainService
                     }
                 }
 
-                message.AppendLine($"- *{trainService.ScheduledTimeOfDeparture}* from {origin} (Platform {trainService.Platform}) to {destination} is {statusText}");
+                message.AppendLine($"- *{trainService.ScheduledTimeOfDeparture}* from *{origin}* (Platform {trainService.Platform}) to *{destination}*: {statusText}");
             }
-            await _telegramService.SendMessageAsync(message.ToString());
+            await telegramService.SendMessageAsync(message.ToString());
         }
         return huxleyResponse;
     }

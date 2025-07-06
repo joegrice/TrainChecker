@@ -25,7 +25,9 @@ Before running the application, you need to configure the settings:
    }
    ```
 
-## Running with Docker Compose (Recommended)
+## Running with Docker Compose
+
+### Option 1: Build Locally (Development)
 
 1. Build and run the application:
    ```bash
@@ -40,6 +42,24 @@ Before running the application, you need to configure the settings:
 3. To stop the application:
    ```bash
    docker-compose down
+   ```
+
+### Option 2: Use Published Image (Production)
+
+1. Use the production compose file that pulls from DockerHub:
+   ```bash
+   docker-compose -f docker-compose.prod.yml up -d
+   ```
+
+2. To stop the application:
+   ```bash
+   docker-compose -f docker-compose.prod.yml down
+   ```
+
+3. To update to the latest version:
+   ```bash
+   docker-compose -f docker-compose.prod.yml pull
+   docker-compose -f docker-compose.prod.yml up -d
    ```
 
 ## Running with Docker directly
