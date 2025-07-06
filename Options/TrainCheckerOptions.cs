@@ -6,9 +6,6 @@ public class TrainCheckerOptions
 
     public string DepartureStation { get; set; } = string.Empty;
     public string ArrivalStation { get; set; } = string.Empty;
-    public string Time { get; set; } = string.Empty;
     public string ApiKey { get; set; } = string.Empty;
     public string Platform { get; set; } = string.Empty;
-    public string ReverseDepartureStation { get; set; } = string.Empty;
-    public string ReverseArrivalStation { get; set; } = string.Empty;
 }

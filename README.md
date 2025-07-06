@@ -19,8 +19,6 @@ Example `appsettings.json` configuration:
   "TrainChecker": {
     "DepartureStation": "CHE",
     "ArrivalStation": "VIC",
-    "ReverseDepartureStation": "VIC",
-    "ReverseArrivalStation": "CHE",
     "Time": "07:30",
     "ApiKey": "YOUR_API_KEY"
   },

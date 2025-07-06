@@ -29,8 +29,8 @@ builder.Services.AddQuartz(q =>
     var reverseJobKey = new JobKey("TrainCheckJobReverse");
     q.AddJob<TrainCheckJob>(opts => opts
         .WithIdentity(reverseJobKey)
-        .UsingJobData("DepartureStation", builder.Configuration["TrainChecker:ReverseDepartureStation"])
-        .UsingJobData("ArrivalStation", builder.Configuration["TrainChecker:ReverseArrivalStation"]));
+        .UsingJobData("DepartureStation", builder.Configuration["TrainChecker:ArrivalStation"])
+        .UsingJobData("ArrivalStation", builder.Configuration["TrainChecker:DepartureStation"]));
     q.AddTrigger(opts => opts
         .ForJob(reverseJobKey)
         .WithIdentity("TrainCheckJobReverse-5pm-trigger")
