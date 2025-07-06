@@ -1,10 +1,12 @@
-
 using System.Text.Json.Serialization;
 
 namespace TrainChecker;
 
 public class HuxleyResponse
 {
+    [JsonPropertyName("locationName")]
+    public string? LocationName { get; set; }
+
     [JsonPropertyName("trainServices")]
     public TrainService[]? TrainServices { get; set; }
 
@@ -14,6 +16,12 @@ public class HuxleyResponse
 
 public class TrainService
 {
+    [JsonPropertyName("origin")]
+    public Location[]? Origin { get; set; }
+
+    [JsonPropertyName("destination")]
+    public Location[]? Destination { get; set; }
+
     [JsonPropertyName("std")]
     public string? ScheduledTimeOfDeparture { get; set; }
 
@@ -25,4 +33,13 @@ public class TrainService
 
     [JsonPropertyName("operator")]
     public string? Operator { get; set; }
+}
+
+public class Location
+{
+    [JsonPropertyName("locationName")]
+    public string? LocationName { get; set; }
+
+    [JsonPropertyName("crs")]
+    public string? Crs { get; set; }
 }

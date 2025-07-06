@@ -1,14 +1,18 @@
+using Microsoft.Extensions.Options;
+
 namespace TrainChecker;
 
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
     private readonly NationalRailService _nationalRailService;
+    private readonly TrainCheckerOptions _options;
 
-    public Worker(ILogger<Worker> logger, NationalRailService nationalRailService)
+    public Worker(ILogger<Worker> logger, NationalRailService nationalRailService, IOptions<TrainCheckerOptions> options)
     {
         _logger = logger;
         _nationalRailService = nationalRailService;
+        _options = options.Value;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -19,10 +23,15 @@ public class Worker : BackgroundService
             {
                 try
                 {
-                    var trainServices = await _nationalRailService.GetTrainStatusAsync();
-                    foreach (var trainService in trainServices)
+                    var huxleyResponse = await _nationalRailService.GetTrainStatusAsync(_options.Time);
+                    if (huxleyResponse?.TrainServices != null)
                     {
-                        _logger.LogInformation("Train at {std} is {etd}", trainService.ScheduledTimeOfDeparture, trainService.EstimatedTimeOfDeparture);
+                        foreach (var trainService in huxleyResponse.TrainServices)
+                        {
+                            var origin = trainService.Origin?.FirstOrDefault()?.LocationName ?? "Unknown";
+                            var destination = trainService.Destination?.FirstOrDefault()?.LocationName ?? "Unknown";
+                            _logger.LogInformation("Train from {origin} to {destination} at {std} is {etd}", origin, destination, trainService.ScheduledTimeOfDeparture, trainService.EstimatedTimeOfDeparture);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -30,7 +39,7 @@ public class Worker : BackgroundService
                     _logger.LogError(ex, "Error checking train status.");
                 }
             }
-            await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
         }
     }
 
