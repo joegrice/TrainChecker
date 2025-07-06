@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using TrainChecker.Options;
 using TrainChecker.Services.Train;
 
 namespace TrainChecker.Controllers;
@@ -8,16 +10,18 @@ namespace TrainChecker.Controllers;
 public class TrainController : ControllerBase
 {
     private readonly ITrainService _trainService;
+    private readonly TrainCheckerOptions _options;
 
-    public TrainController(ITrainService trainService)
+    public TrainController(ITrainService trainService, IOptions<TrainCheckerOptions> options)
     {
         _trainService = trainService;
+        _options = options.Value;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetTrainStatus()
     {
-        var huxleyResponse = await _trainService.GetAndSendTrainStatusAsync();
+        var huxleyResponse = await _trainService.GetAndSendTrainStatusAsync(_options.DepartureStation, _options.ArrivalStation);
         return Ok(huxleyResponse);
     }
 }

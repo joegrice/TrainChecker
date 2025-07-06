@@ -29,6 +29,9 @@ Example `appsettings.json` configuration:
 }
 ```
 
+The `TrainChecker:ApiKey` is used to access the train information service. You can find the API documentation at: [https://huxley2.azurewebsites.net/](https://huxley2.azurewebsites.net/)
+
+
 ## Running the Application
 
 To run the application, navigate to the `TrainChecker` directory and execute:

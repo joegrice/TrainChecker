@@ -21,9 +21,9 @@ public class NationalRailService : INationalRailService
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     }
 
-    public async Task<HuxleyResponse?> GetTrainStatusAsync(string time)
+    public async Task<HuxleyResponse?> GetTrainStatusAsync(string time, string departureStation, string arrivalStation)
     {
-        var requestUri = $"/departures/{_options.DepartureStation}/to/{_options.ArrivalStation}?accessToken={_options.ApiKey}&time={time}&timeWindow=60&expand=true";
+        var requestUri = $"/departures/{departureStation}/to/{arrivalStation}?accessToken={_options.ApiKey}&time={time}&timeWindow=60&expand=true";
         _logger.LogInformation("Requesting train status from: {BaseAddress}{RequestUri}", _httpClient.BaseAddress, requestUri);
         
         var response = await _httpClient.GetAsync(requestUri);
