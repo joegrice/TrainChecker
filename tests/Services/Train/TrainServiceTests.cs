@@ -1,10 +1,7 @@
-using System.Text;
-using Microsoft.Extensions.Logging;
 using Moq;
 using TrainChecker.Models;
 using TrainChecker.Services.NationalRail;
 using TrainChecker.Services.Telegram;
-using TrainChecker.Services.Train;
 using Xunit;
 
 namespace TrainChecker.Tests.Services.Train;
