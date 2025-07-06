@@ -145,7 +145,7 @@ public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFacto
     }
 
     [Fact]
-    public async Task Application_StartsSuccessfully()
+    public void Application_StartsSuccessfully()
     {
         // Arrange
         var client = _factory.WithWebHostBuilder(builder =>
