@@ -1,4 +1,4 @@
-namespace TrainChecker;
+namespace TrainChecker.Options;
 
 public class TelegramOptions
 {

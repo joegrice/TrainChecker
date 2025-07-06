@@ -1,4 +1,4 @@
-namespace TrainChecker;
+namespace TrainChecker.Options;
 
 public class TrainCheckerOptions
 {
@@ -8,4 +8,5 @@ public class TrainCheckerOptions
     public string ArrivalStation { get; set; } = string.Empty;
     public string Time { get; set; } = string.Empty;
     public string ApiKey { get; set; } = string.Empty;
+    public string Platform { get; set; } = string.Empty;
 }

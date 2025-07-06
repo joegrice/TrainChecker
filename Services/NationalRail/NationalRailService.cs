@@ -1,11 +1,12 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Logging;
+using TrainChecker.Options;
+using TrainChecker.Models;
 
-namespace TrainChecker;
+namespace TrainChecker.Services.NationalRail;
 
-public class NationalRailService
+public class NationalRailService : INationalRailService
 {
     private readonly HttpClient _httpClient;
     private readonly TrainCheckerOptions _options;

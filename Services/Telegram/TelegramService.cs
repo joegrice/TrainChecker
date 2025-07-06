@@ -1,9 +1,10 @@
 using System.Text;
 using Microsoft.Extensions.Options;
+using TrainChecker.Options;
 
-namespace TrainChecker;
+namespace TrainChecker.Services.Telegram;
 
-public class TelegramService
+public class TelegramService : ITelegramService
 {
     private readonly HttpClient _httpClient;
     private readonly TelegramOptions _options;

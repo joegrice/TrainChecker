@@ -1,12 +1,16 @@
-using System.Text;
 using Quartz;
-using TrainChecker;
+using TrainChecker.Services.NationalRail;
+using TrainChecker.Services.Telegram;
+using TrainChecker.Options;
+using TrainChecker.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddHttpClient<NationalRailService>();
-builder.Services.AddHttpClient<TelegramService>();
+builder.Services.AddControllers();
+builder.Services.AddHttpClient<INationalRailService, NationalRailService>();
+builder.Services.AddHttpClient<ITelegramService, TelegramService>();
+builder.Services.AddScoped<TrainChecker.Services.Train.ITrainService, TrainChecker.Services.Train.TrainService>();
 builder.Services.Configure<TrainCheckerOptions>(builder.Configuration.GetSection(TrainCheckerOptions.TrainChecker));
 builder.Services.Configure<TelegramOptions>(builder.Configuration.GetSection(TelegramOptions.Telegram));
 
@@ -25,22 +29,6 @@ builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.MapGet("/trains", async (NationalRailService nationalRailService, TelegramService telegramService) =>
-{
-    var huxleyResponse = await nationalRailService.GetTrainStatusAsync(DateTime.Now.ToString("HH:mm"));
-    if (huxleyResponse?.TrainServices != null)
-    {
-        var message = new StringBuilder();
-        message.AppendLine("*Train Status Update*");
-        foreach (var trainService in huxleyResponse.TrainServices)
-        {
-            var origin = trainService.Origin?.FirstOrDefault()?.LocationName ?? "Unknown";
-            var destination = trainService.Destination?.FirstOrDefault()?.LocationName ?? "Unknown";
-            message.AppendLine($"- *{trainService.ScheduledTimeOfDeparture}* from {origin} to {destination} is {trainService.EstimatedTimeOfDeparture}");
-        }
-        await telegramService.SendMessageAsync(message.ToString());
-    }
-    return Results.Ok(huxleyResponse);
-});
+app.MapControllers();
 
 app.Run();

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace TrainChecker;
+namespace TrainChecker.Models;
 
 public class HuxleyResponse
 {
