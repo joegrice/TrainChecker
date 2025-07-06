@@ -31,7 +31,7 @@ public static class TestHelpers
 
         return new HuxleyResponse
         {
-            LocationName = locationName,
+            OriginName = locationName,
             Crs = crs,
             TrainServices = trainServices.ToArray()
         };
@@ -70,7 +70,7 @@ public static class TestHelpers
     {
         return new HuxleyResponse
         {
-            LocationName = "Test Station",
+            OriginName = "Test Station",
             Crs = "TST",
             TrainServices = Array.Empty<TrainService>()
         };
@@ -80,7 +80,7 @@ public static class TestHelpers
     {
         return new HuxleyResponse
         {
-            LocationName = "Test Station",
+            OriginName = "Test Station",
             Crs = "TST",
             TrainServices = null
         };

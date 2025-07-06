@@ -14,7 +14,7 @@ public class TrainService(INationalRailService nationalRailService, ITelegramSer
         if (huxleyResponse?.TrainServices != null)
         {
             var message = new StringBuilder();
-            message.AppendLine($"*Train Status Update for {huxleyResponse.LocationName}*");
+            message.AppendLine($"*Train Status Update for {huxleyResponse.OriginName} to {huxleyResponse.DestinationName}*");
             foreach (var trainService in huxleyResponse.TrainServices)
             {
                 var origin = trainService.Origin?.FirstOrDefault()?.LocationName ?? "Unknown";

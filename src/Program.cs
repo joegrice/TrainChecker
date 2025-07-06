@@ -39,8 +39,12 @@ namespace TrainChecker
                     .UsingJobData("ArrivalStation", builder.Configuration["TrainChecker:ArrivalStation"]));
                 q.AddTrigger(opts => opts
                     .ForJob(forwardJobKey)
-                    .WithIdentity("TrainCheckJobForward-trigger")
+                    .WithIdentity("TrainCheckJobForward-730am-trigger")
                     .WithCronSchedule("0 30 7 ? * MON-FRI *"));
+                q.AddTrigger(opts => opts
+                    .ForJob(forwardJobKey)
+                    .WithIdentity("TrainCheckJobForward-748am-trigger")
+                    .WithCronSchedule("0 48 7 ? * MON-FRI *"));
 
                 var reverseJobKey = new JobKey("TrainCheckJobReverse");
                 q.AddJob<TrainCheckJob>(opts => opts

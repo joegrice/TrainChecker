@@ -12,7 +12,7 @@ public class TrainServicesTests
         // Arrange
         var original = new HuxleyResponse
         {
-            LocationName = "London Euston",
+            OriginName = "London Euston",
             Crs = "EUS",
             TrainServices = new[]
             {
@@ -34,7 +34,7 @@ public class TrainServicesTests
 
         // Assert
         Assert.NotNull(deserialized);
-        Assert.Equal(original.LocationName, deserialized.LocationName);
+        Assert.Equal(original.OriginName, deserialized.OriginName);
         Assert.Equal(original.Crs, deserialized.Crs);
         Assert.Single(deserialized.TrainServices!);
         
@@ -107,13 +107,13 @@ public class TrainServicesTests
         // Arrange
         var response = new HuxleyResponse
         {
-            LocationName = "London Euston",
+            OriginName = "London Euston",
             Crs = "EUS",
             TrainServices = null
         };
 
         // Act & Assert
-        Assert.Equal("London Euston", response.LocationName);
+        Assert.Equal("London Euston", response.OriginName);
         Assert.Equal("EUS", response.Crs);
         Assert.Null(response.TrainServices);
     }
@@ -139,7 +139,7 @@ public class TrainServicesTests
         // Arrange
         var response = new HuxleyResponse
         {
-            LocationName = "Test Location",
+            OriginName = "Test Location",
             Crs = "TST",
             TrainServices = new[]
             {
@@ -200,7 +200,7 @@ public class TrainServicesTests
 
         // Assert
         Assert.NotNull(response);
-        Assert.Equal("London Euston", response.LocationName);
+        Assert.Equal("London Euston", response.OriginName);
         Assert.Equal("EUS", response.Crs);
         Assert.Single(response.TrainServices!);
         
