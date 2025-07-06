@@ -1,0 +1,30 @@
+# Exclude build artifacts
+**/bin/
+**/obj/
+**/out/
+
+# Exclude test files
+tests/
+
+# Exclude version control
+.git/
+.gitignore
+
+# Exclude IDE files
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln.DotSettings.user
+
+# Exclude documentation
+README.md
+
+# Exclude Docker files themselves
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Exclude temporary files
+**/.DS_Store
+**/Thumbs.db
