@@ -64,10 +64,23 @@ dotnet run
 
 3. Run with Docker Compose:
    ```bash
+   # For local development (builds from source)
    docker-compose up --build
+   
+   # For production (uses published image)
+   docker-compose -f docker-compose.prod.yml up -d
    ```
 
 For detailed Docker setup instructions, see [DOCKER.md](DOCKER.md).
+
+### Option 3: Using Published Docker Image
+You can also use the pre-built image from Docker Hub:
+```bash
+docker pull joegrice/trainchecker:latest
+docker run -d --name trainchecker -p 8080:8080 --env-file .env joegrice/trainchecker:latest
+```
+
+For GitHub Actions setup to automatically publish releases, see [GITHUB_ACTIONS.md](GITHUB_ACTIONS.md).
 
 ## API Endpoints
 

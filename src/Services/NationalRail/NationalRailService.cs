@@ -17,14 +17,14 @@ public class NationalRailService : INationalRailService
         _httpClient = httpClient;
         _options = options.Value;
         _logger = logger;
-        _httpClient.BaseAddress = new Uri("https://huxley2.azurewebsites.net");
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     }
 
     public async Task<HuxleyResponse?> GetTrainStatusAsync(string time, string departureStation, string arrivalStation)
     {
         var requestUri = $"/departures/{departureStation}/to/{arrivalStation}?accessToken={_options.ApiKey}&time={time}&timeWindow=60&expand=true";
-        _logger.LogInformation("Requesting train status from: {BaseAddress}{RequestUri}", _httpClient.BaseAddress, requestUri);
+        var redactedRequestUri = System.Text.RegularExpressions.Regex.Replace(requestUri, "accessToken=[^&]*", "accessToken=********");
+        _logger.LogInformation("Requesting train status from: {BaseAddress}{RequestUri}", _httpClient.BaseAddress, redactedRequestUri);
         
         var response = await _httpClient.GetAsync(requestUri);
 

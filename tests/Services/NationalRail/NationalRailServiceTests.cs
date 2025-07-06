@@ -24,10 +24,14 @@ public class NationalRailServiceTests
         _mockLogger = new Mock<ILogger<NationalRailService>>();
         _options = new TrainCheckerOptions
         {
-            ApiKey = "test-api-key"
+            ApiKey = "test-api-key",
+            BaseAddress = "https://fake-api.test"
         };
 
-        var httpClient = new HttpClient(_mockHttpMessageHandler.Object);
+        var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
+        {
+            BaseAddress = new Uri(_options.BaseAddress)
+        };
         var optionsWrapper = MsOptions.Create(_options);
         
         _nationalRailService = new NationalRailService(httpClient, optionsWrapper, _mockLogger.Object);

@@ -15,11 +15,20 @@ namespace TrainChecker
 
             // Add services to the container.
             builder.Services.AddControllers();
-            builder.Services.AddHttpClient<INationalRailService, NationalRailService>();
-            builder.Services.AddHttpClient<ITelegramService, TelegramService>();
-            builder.Services.AddScoped<ITrainService, TrainService>();
+            
+            // Configure TrainChecker options first
             builder.Services.Configure<TrainCheckerOptions>(builder.Configuration.GetSection(TrainCheckerOptions.TrainChecker));
             builder.Services.Configure<TelegramOptions>(builder.Configuration.GetSection(TelegramOptions.Telegram));
+            
+            // Configure HttpClient with base address from configuration
+            builder.Services.AddHttpClient<INationalRailService, NationalRailService>((serviceProvider, client) =>
+            {
+                var trainCheckerOptions = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<TrainCheckerOptions>>().Value;
+                client.BaseAddress = new Uri(trainCheckerOptions.BaseAddress);
+            });
+            
+            builder.Services.AddHttpClient<ITelegramService, TelegramService>();
+            builder.Services.AddScoped<ITrainService, TrainService>();
 
             builder.Services.AddQuartz(q =>
             {

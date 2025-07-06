@@ -3,7 +3,8 @@
     "DepartureStation": "TEST_DEP",
     "ArrivalStation": "TEST_ARR",
     "ApiKey": "test-api-key",
-    "Platform": "1"
+    "Platform": "1",
+    "BaseAddress": "https://fake-api.test"
   },
   "Telegram": {
     "BotToken": "test-bot-token",
