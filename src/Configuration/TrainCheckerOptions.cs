@@ -8,5 +8,5 @@ public class TrainCheckerOptions
     public string ArrivalStation { get; set; } = string.Empty;
     public string ApiKey { get; set; } = string.Empty;
     public string Platform { get; set; } = string.Empty;
-    public string BaseAddress { get; set; } = "https://huxley2.azurewebsites.net";
+    public string BaseAddress { get; set; } = "";
 }
