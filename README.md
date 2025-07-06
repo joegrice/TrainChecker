@@ -18,6 +18,7 @@ To run this application, you need to configure the following values:
 - **Telegram:ChatId**: The chat ID where the bot will send messages. You can get this by sending a message to your bot and then accessing `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`.
 - **TrainChecker:DepartureStation**: Your departure station code
 - **TrainChecker:ArrivalStation**: Your arrival station code
+- **TrainChecker:ApiKey**: Your API key for the train information service (see [Huxley2 API](https://huxley2.azurewebsites.net/))
 
 ### Configuration Methods
 
@@ -25,8 +26,9 @@ To run this application, you need to configure the following values:
 ```json
 {
   "TrainChecker": {
-    "DepartureStation": "CHE",
-    "ArrivalStation": "VIC"
+    "DepartureStation": "DKG",
+    "ArrivalStation": "VIC",
+    "ApiKey": "YOUR_API_KEY"
   },
   "Telegram": {
     "BotToken": "YOUR_TELEGRAM_BOT_TOKEN",
@@ -39,6 +41,7 @@ To run this application, you need to configure the following values:
 ```bash
 TrainChecker__DepartureStation=CHE
 TrainChecker__ArrivalStation=VIC
+TrainChecker__ApiKey=YOUR_API_KEY
 Telegram__BotToken=YOUR_TELEGRAM_BOT_TOKEN
 Telegram__ChatId=YOUR_TELEGRAM_CHAT_ID
 ```

@@ -128,6 +128,7 @@ Then edit the `.env` file with your actual values:
 ```
 TrainChecker__DepartureStation=London Paddington
 TrainChecker__ArrivalStation=Reading
+TrainChecker__ApiKey=your_huxley2_api_key_here
 Telegram__BotToken=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
 Telegram__ChatId=-1001234567890
 ```
