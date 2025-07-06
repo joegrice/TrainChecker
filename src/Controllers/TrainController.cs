@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using TrainChecker.Options;
+using TrainChecker.Configuration;
 using TrainChecker.Services.Train;
 
 namespace TrainChecker.Controllers;

@@ -1,4 +1,4 @@
-namespace TrainChecker.Options;
+namespace TrainChecker.Configuration;
 
 public class TrainCheckerOptions
 {
