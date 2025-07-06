@@ -105,10 +105,6 @@ If you want to integrate this service into an existing docker-compose setup:
        environment:
          - ASPNETCORE_ENVIRONMENT=Production
          - ASPNETCORE_URLS=http://+:8080
-         - TrainChecker__DepartureStation=${TRAINCHECKER_DEPARTURE_STATION:-}
-         - TrainChecker__ArrivalStation=${TRAINCHECKER_ARRIVAL_STATION:-}
-         - Telegram__BotToken=${TELEGRAM_BOT_TOKEN:-}
-         - Telegram__ChatId=${TELEGRAM_CHAT_ID:-}
        restart: unless-stopped
    ```
 
@@ -130,10 +126,10 @@ cp TrainChecker/.env.example .env
 
 Then edit the `.env` file with your actual values:
 ```
-TRAINCHECKER_DEPARTURE_STATION=London Paddington
-TRAINCHECKER_ARRIVAL_STATION=Reading
-TELEGRAM_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
-TELEGRAM_CHAT_ID=-1001234567890
+TrainChecker__DepartureStation=London Paddington
+TrainChecker__ArrivalStation=Reading
+Telegram__BotToken=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
+Telegram__ChatId=-1001234567890
 ```
 
 ## Troubleshooting
