@@ -10,7 +10,7 @@ using TrainChecker.Services.NationalRail;
 using TrainChecker.Services.Telegram;
 using Xunit;
 
-namespace TrainChecker.Tests.Integration;
+namespace TrainChecker.Tests.Integration.v1;
 
 public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -109,7 +109,7 @@ public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFacto
         }).CreateClient();
 
         // Act
-        var response = await client.GetAsync("/trains");
+        var response = await client.GetAsync("api/v1/trains");
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -138,7 +138,7 @@ public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFacto
         }).CreateClient();
 
         // Act
-        var response = await client.GetAsync("/trains");
+        var response = await client.GetAsync("api/v1/trains");
 
         // Assert
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
@@ -256,7 +256,7 @@ public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFacto
         }).CreateClient();
 
         // Act
-        var response = await client.GetAsync("/trains/MAN/to/EUS");
+        var response = await client.GetAsync("api/v1/trains/MAN/to/EUS");
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -291,7 +291,7 @@ public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFacto
         }).CreateClient();
 
         // Act - Use a single space character which will be caught by validation
-        var response = await client.GetAsync("/trains/%20/to/EUS");
+        var response = await client.GetAsync("api/v1/trains/%20/to/EUS");
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -321,7 +321,7 @@ public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFacto
         }).CreateClient();
 
         // Act - Use a single space character which will be caught by validation
-        var response = await client.GetAsync("/trains/MAN/to/%20");
+        var response = await client.GetAsync("api/v1/trains/MAN/to/%20");
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -400,7 +400,7 @@ public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFacto
         }).CreateClient();
 
         // Act
-        var response = await client.GetAsync($"/trains/{origin}/to/{destination}");
+        var response = await client.GetAsync($"api/v1/trains/{origin}/to/{destination}");
 
         // Assert
         response.EnsureSuccessStatusCode();

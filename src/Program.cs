@@ -4,6 +4,7 @@ using TrainChecker.Jobs;
 using TrainChecker.Services.NationalRail;
 using TrainChecker.Services.Telegram;
 using TrainChecker.Services.Train;
+using TrainChecker.Swagger;
 
 namespace TrainChecker
 {
@@ -15,7 +16,24 @@ namespace TrainChecker
 
             // Add services to the container.
             builder.Services.AddControllers();
-            
+            builder.Services.AddApiVersioning(options =>
+            {
+                options.ReportApiVersions = true;
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+            });
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Train Checker API",
+                    Description = "An ASP.NET Core Web API for checking train statuses."
+                });
+                options.OperationFilter<SwaggerDefaultValues>();
+            });
+                        
             // Configure TrainChecker options first
             builder.Services.Configure<TrainCheckerOptions>(builder.Configuration.GetSection(TrainCheckerOptions.TrainChecker));
             builder.Services.Configure<TelegramOptions>(builder.Configuration.GetSection(TelegramOptions.Telegram));
@@ -64,6 +82,13 @@ namespace TrainChecker
             builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
             var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
 
             app.MapControllers();
 
