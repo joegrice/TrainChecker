@@ -52,8 +52,8 @@ public class TrainServiceTests
         Assert.NotNull(result);
         Assert.Equal(huxleyResponse, result);
         
-        _mockTelegramService.Verify(x => x.SendMessageAsync(It.Is<string>(msg => 
-            msg.Contains("*Train Status Update*") &&
+        _mockTelegramService.Verify(x => x.SendMessageAsync(It.Is<string>(msg =>
+            msg.Contains("*Train Status Update for London*") &&
             msg.Contains("🟢 *On time*") &&
             msg.Contains("08:30") &&
             msg.Contains("London Euston") &&
@@ -183,6 +183,7 @@ public class TrainServiceTests
         var arrivalStation = "BHM";
         var huxleyResponse = new HuxleyResponse
         {
+            LocationName = "",
             TrainServices = new[]
             {
                 new TrainService
@@ -204,9 +205,9 @@ public class TrainServiceTests
         await _trainService.GetAndSendTrainStatusAsync(departureStation, arrivalStation);
 
         // Assert
-        _mockTelegramService.Verify(x => x.SendMessageAsync(It.Is<string>(msg => 
-            msg.Contains("from Unknown") &&
-            msg.Contains("to Unknown")
+        _mockTelegramService.Verify(x => x.SendMessageAsync(It.Is<string>(msg =>
+            msg.Contains("from *Unknown*") &&
+            msg.Contains("to *Unknown*")
         )), Times.Once);
     }
 }
