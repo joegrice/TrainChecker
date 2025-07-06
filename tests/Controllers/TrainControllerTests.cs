@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TrainChecker.Configuration;
 using TrainChecker.Controllers;
+using TrainChecker.Controllers.v1;
 using TrainChecker.Models;
 using TrainChecker.Services.Train;
 using Xunit;

@@ -3,10 +3,11 @@ using Microsoft.Extensions.Options;
 using TrainChecker.Configuration;
 using TrainChecker.Services.Train;
 
-namespace TrainChecker.Controllers;
+namespace TrainChecker.Controllers.v1;
 
 [ApiController]
-[Route("trains")]
+[ApiVersion("1.0")]
+[Route("api/v1/trains")]
 public class TrainController(ITrainService trainService, IOptions<TrainCheckerOptions> options)
     : ControllerBase
 {

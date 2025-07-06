@@ -4,7 +4,11 @@
     "TrainChecker": {
       "commandName": "Project",
       "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5001",
+      "launchBrowser": true,
+      "launchUrl": "swagger/index.html",
       "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_ENVIRONMENT": "Development"
       }
     }
