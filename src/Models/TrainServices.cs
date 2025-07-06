@@ -5,7 +5,10 @@ namespace TrainChecker.Models;
 public class HuxleyResponse
 {
     [JsonPropertyName("locationName")]
-    public string? LocationName { get; set; }
+    public string? OriginName { get; set; }
+    
+    [JsonPropertyName("filterLocationName")]
+    public string? DestinationName { get; set; }
 
     [JsonPropertyName("trainServices")]
     public TrainService[]? TrainServices { get; set; }

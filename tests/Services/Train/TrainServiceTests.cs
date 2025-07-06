@@ -27,18 +27,19 @@ public class TrainServiceTests
         var arrivalStation = "BHM";
         var huxleyResponse = new HuxleyResponse
         {
-            LocationName = "London",
-            TrainServices = new[]
-            {
+            OriginName = "London",
+            DestinationName = "Birmingham New Street",
+            TrainServices =
+            [
                 new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "On time",
                     Platform = "1",
-                    Origin = new[] { new Location { LocationName = "London Euston" } },
-                    Destination = new[] { new Location { LocationName = "Birmingham New Street" } }
+                    Origin = [new Location { LocationName = "London Euston" }],
+                    Destination = [new Location { LocationName = "Birmingham New Street" }]
                 }
-            }
+            ]
         };
 
         _mockNationalRailService
@@ -53,7 +54,7 @@ public class TrainServiceTests
         Assert.Equal(huxleyResponse, result);
         
         _mockTelegramService.Verify(x => x.SendMessageAsync(It.Is<string>(msg =>
-            msg.Contains("*Train Status Update for London*") &&
+            msg.Contains("*Train Status Update for London to Birmingham New Street*") &&
             msg.Contains("🟢 *On time*") &&
             msg.Contains("08:30") &&
             msg.Contains("London Euston") &&
@@ -70,17 +71,17 @@ public class TrainServiceTests
         var arrivalStation = "BHM";
         var huxleyResponse = new HuxleyResponse
         {
-            TrainServices = new[]
-            {
+            TrainServices =
+            [
                 new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "08:45",
                     Platform = "2",
-                    Origin = new[] { new Location { LocationName = "London Euston" } },
-                    Destination = new[] { new Location { LocationName = "Birmingham New Street" } }
+                    Origin = [new Location { LocationName = "London Euston" }],
+                    Destination = [new Location { LocationName = "Birmingham New Street" }]
                 }
-            }
+            ]
         };
 
         _mockNationalRailService
@@ -105,17 +106,17 @@ public class TrainServiceTests
         var arrivalStation = "BHM";
         var huxleyResponse = new HuxleyResponse
         {
-            TrainServices = new[]
-            {
+            TrainServices =
+            [
                 new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "Cancelled",
                     Platform = "3",
-                    Origin = new[] { new Location { LocationName = "London Euston" } },
-                    Destination = new[] { new Location { LocationName = "Birmingham New Street" } }
+                    Origin = [new Location { LocationName = "London Euston" }],
+                    Destination = [new Location { LocationName = "Birmingham New Street" }]
                 }
-            }
+            ]
         };
 
         _mockNationalRailService
@@ -158,7 +159,7 @@ public class TrainServiceTests
         var arrivalStation = "BHM";
         var huxleyResponse = new HuxleyResponse
         {
-            LocationName = "London",
+            OriginName = "London",
             TrainServices = null
         };
 
@@ -183,9 +184,9 @@ public class TrainServiceTests
         var arrivalStation = "BHM";
         var huxleyResponse = new HuxleyResponse
         {
-            LocationName = "",
-            TrainServices = new[]
-            {
+            OriginName = "",
+            TrainServices =
+            [
                 new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
@@ -194,7 +195,7 @@ public class TrainServiceTests
                     Origin = null,
                     Destination = null
                 }
-            }
+            ]
         };
 
         _mockNationalRailService

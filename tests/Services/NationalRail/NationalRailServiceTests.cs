@@ -47,7 +47,7 @@ public class NationalRailServiceTests
         
         var expectedResponse = new HuxleyResponse
         {
-            LocationName = "London",
+            OriginName = "London",
             Crs = "LDN",
             TrainServices = new[]
             {
@@ -82,7 +82,7 @@ public class NationalRailServiceTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(expectedResponse.LocationName, result.LocationName);
+        Assert.Equal(expectedResponse.OriginName, result.OriginName);
         Assert.Equal(expectedResponse.Crs, result.Crs);
         Assert.Single(result.TrainServices!);
         Assert.Equal("08:30", result.TrainServices[0].ScheduledTimeOfDeparture);

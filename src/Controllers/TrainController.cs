@@ -18,4 +18,21 @@ public class TrainController(ITrainService trainService, IOptions<TrainCheckerOp
         var huxleyResponse = await trainService.GetAndSendTrainStatusAsync(_options.DepartureStation, _options.ArrivalStation);
         return Ok(huxleyResponse);
     }
+
+    [HttpGet("{origin}/to/{destination}")]
+    public async Task<IActionResult> GetTrainStatus(string origin, string destination)
+    {
+        if (string.IsNullOrWhiteSpace(origin))
+        {
+            return BadRequest("Origin station code is required");
+        }
+
+        if (string.IsNullOrWhiteSpace(destination))
+        {
+            return BadRequest("Destination station code is required");
+        }
+
+        var huxleyResponse = await trainService.GetAndSendTrainStatusAsync(origin.ToUpper(), destination.ToUpper());
+        return Ok(huxleyResponse);
+    }
 }
