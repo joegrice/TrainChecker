@@ -14,15 +14,22 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        // Configure CORS options
+        builder.Services.Configure<CorsOptions>(builder.Configuration.GetSection(CorsOptions.Cors));
+        var corsOptions = builder.Configuration.GetRequiredSection(CorsOptions.Cors).Get<CorsOptions>();
+        
         const string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
         builder.Services.AddCors(options =>
         {
             options.AddPolicy(name: myAllowSpecificOrigins,
                 policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173") // Allow your frontend origin
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
+                    if (corsOptions.AllowedOrigins.Length > 0)
+                    {
+                        policy.WithOrigins(corsOptions.AllowedOrigins)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    }
                 });
         });
 

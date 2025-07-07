@@ -19,6 +19,7 @@ To run this application, you need to configure the following values:
 - **TrainChecker:DepartureStation**: Your departure station code
 - **TrainChecker:ArrivalStation**: Your arrival station code
 - **TrainChecker:ApiKey**: Your API key for the train information service (see [Huxley2 API](https://huxley2.azurewebsites.net/))
+- **Cors:AllowedOrigins**: Array of allowed frontend origins for CORS (Cross-Origin Resource Sharing)
 
 ### Configuration Methods
 
@@ -33,6 +34,11 @@ To run this application, you need to configure the following values:
   "Telegram": {
     "BotToken": "YOUR_TELEGRAM_BOT_TOKEN",
     "ChatId": "YOUR_TELEGRAM_CHAT_ID"
+  },
+  "Cors": {
+    "AllowedOrigins": [
+      "http://localhost:5173"
+    ]
   }
 }
 ```
@@ -44,7 +50,12 @@ TrainChecker__ArrivalStation=VIC
 TrainChecker__ApiKey=YOUR_API_KEY
 Telegram__BotToken=YOUR_TELEGRAM_BOT_TOKEN
 Telegram__ChatId=YOUR_TELEGRAM_CHAT_ID
+Cors__AllowedOrigins__0=http://localhost:5173
 ```
+
+### CORS Configuration
+
+The application includes CORS (Cross-Origin Resource Sharing) support to allow frontend applications to access the API from different origins. Configure the `Cors:AllowedOrigins` setting with the URLs of your frontend applications.
 
 ## Running the Application
 
