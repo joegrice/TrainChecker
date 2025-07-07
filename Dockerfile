@@ -15,6 +15,15 @@ RUN dotnet publish -c Release -o out --no-restore
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 
+# Install tzdata and set timezone to London
+RUN apt-get update && apt-get install -y tzdata && \
+    ln -fs /usr/share/zoneinfo/Europe/London /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set environment variable for timezone
+ENV TZ=Europe/London
+
 # Create a non-root user for security
 RUN adduser --disabled-password --gecos '' --shell /bin/bash --uid 1001 appuser
 

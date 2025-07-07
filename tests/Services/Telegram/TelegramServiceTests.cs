@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
@@ -14,6 +15,7 @@ public class TelegramServiceTests
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
     private readonly TelegramOptions _options;
     private readonly TelegramService _telegramService;
+    private readonly NullLogger<TelegramService> _logger;
 
     public TelegramServiceTests()
     {
@@ -23,11 +25,12 @@ public class TelegramServiceTests
             BotToken = "test-bot-token",
             ChatId = "test-chat-id"
         };
+        _logger = new NullLogger<TelegramService>();
 
         var httpClient = new HttpClient(_mockHttpMessageHandler.Object);
         var optionsWrapper = Options.Create(_options);
         
-        _telegramService = new TelegramService(httpClient, optionsWrapper);
+        _telegramService = new TelegramService(httpClient, optionsWrapper, _logger);
     }
 
     [Fact]
@@ -116,7 +119,7 @@ public class TelegramServiceTests
         // Arrange & Act
         var httpClient = new HttpClient();
         var optionsWrapper = Options.Create(_options);
-        var service = new TelegramService(httpClient, optionsWrapper);
+        var service = new TelegramService(httpClient, optionsWrapper, _logger);
 
         // Assert
         Assert.Equal($"https://api.telegram.org/bot{_options.BotToken}/", httpClient.BaseAddress!.ToString());

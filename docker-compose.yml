@@ -12,4 +12,5 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
+      - TZ=Europe/London
     restart: unless-stopped

@@ -1,12 +1,10 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using Quartz;
-using TrainChecker.Configuration;
 using TrainChecker.Jobs;
 using TrainChecker.Models;
 using TrainChecker.Services.Train;
 using Xunit;
-using MsOptions = Microsoft.Extensions.Options.Options;
 
 namespace TrainChecker.Tests.Jobs;
 
@@ -15,9 +13,7 @@ public class TrainCheckJobTests
     private readonly Mock<ILogger<TrainCheckJob>> _mockLogger;
     private readonly Mock<ITrainService> _mockTrainService;
     private readonly Mock<IJobExecutionContext> _mockJobContext;
-    private readonly Mock<IJobDetail> _mockJobDetail;
     private readonly Mock<JobDataMap> _mockJobDataMap;
-    private readonly TrainCheckerOptions _options;
     private readonly TrainCheckJob _job;
 
     public TrainCheckJobTests()
@@ -25,21 +21,15 @@ public class TrainCheckJobTests
         _mockLogger = new Mock<ILogger<TrainCheckJob>>();
         _mockTrainService = new Mock<ITrainService>();
         _mockJobContext = new Mock<IJobExecutionContext>();
-        _mockJobDetail = new Mock<IJobDetail>();
         _mockJobDataMap = new Mock<JobDataMap>();
-        
-        _options = new TrainCheckerOptions
-        {
-            DepartureStation = "LDN",
-            ArrivalStation = "BHM"
-        };
 
-        var optionsWrapper = MsOptions.Create(_options);
-        _job = new TrainCheckJob(_mockLogger.Object, _mockTrainService.Object, optionsWrapper);
+        _job = new TrainCheckJob(_mockLogger.Object, _mockTrainService.Object);
 
         // Setup job context
-        _mockJobContext.Setup(x => x.JobDetail).Returns(_mockJobDetail.Object);
-        _mockJobDetail.Setup(x => x.JobDataMap).Returns(_mockJobDataMap.Object);
+        Mock<IJobDetail> mockJobDetail = new();
+        mockJobDetail.Setup(x => x.Key).Returns(() => new JobKey(nameof(TrainCheckJob)));
+        mockJobDetail.Setup(x => x.JobDataMap).Returns(_mockJobDataMap.Object);
+        _mockJobContext.Setup(x => x.JobDetail).Returns(mockJobDetail.Object);
     }
 
     [Fact]
