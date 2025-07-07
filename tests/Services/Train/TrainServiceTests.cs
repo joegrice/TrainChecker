@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using TrainChecker.Models;
 using TrainChecker.Services.NationalRail;

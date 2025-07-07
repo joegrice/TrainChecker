@@ -72,8 +72,8 @@ public class Program
                 .WithCronSchedule("0 30 7 ? * MON-FRI *"));
             q.AddTrigger(opts => opts
                 .ForJob(forwardJobKey)
-                .WithIdentity("TrainCheckJobForward-748am-trigger")
-                .WithCronSchedule("0 48 7 ? * MON-FRI *"));
+                .WithIdentity("TrainCheckJobForward-745am-trigger")
+                .WithCronSchedule("0 45 7 ? * MON-FRI *"));
 
             var reverseJobKey = new JobKey("TrainCheckJobReverse");
             q.AddJob<TrainCheckJob>(opts => opts

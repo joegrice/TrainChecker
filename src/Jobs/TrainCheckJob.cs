@@ -1,21 +1,16 @@
-using Microsoft.Extensions.Options;
 using Quartz;
-using TrainChecker.Configuration;
 using TrainChecker.Services.Train;
 
 namespace TrainChecker.Jobs;
 
-[DisallowConcurrentExecution]
 public class TrainCheckJob(
     ILogger<TrainCheckJob> logger,
-    ITrainService trainService,
-    IOptions<TrainCheckerOptions> options)
+    ITrainService trainService)
     : IJob
 {
-    private readonly TrainCheckerOptions _options = options.Value;
-
     public async Task Execute(IJobExecutionContext context)
     {
+        logger.LogInformation("TrainCheckJob {JobName} started.", context.JobDetail.Key.Name);
         try
         {
             var departureStation = context.JobDetail.JobDataMap.GetString("DepartureStation");
