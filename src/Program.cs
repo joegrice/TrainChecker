@@ -1,3 +1,6 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Quartz;
 using TrainChecker.Configuration;
 using TrainChecker.Jobs;
@@ -66,6 +69,25 @@ public class Program
         builder.Services.AddHttpClient<ITelegramService, TelegramService>();
         builder.Services.AddScoped<ITrainService, TrainService>();
 
+        builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                };
+            });
+
         builder.Services.AddQuartz(q =>
         {
             var forwardJobKey = new JobKey("TrainCheckJobForward");
@@ -109,6 +131,10 @@ public class Program
         }
 
         app.UseCors(myAllowSpecificOrigins);
+        
+        app.UseAuthentication();
+        app.UseAuthorization();
+        
         app.MapControllers();
 
         app.Run();
