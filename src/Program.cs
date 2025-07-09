@@ -8,6 +8,8 @@ using TrainChecker.Services.NationalRail;
 using TrainChecker.Services.Telegram;
 using TrainChecker.Services.Train;
 using TrainChecker.Swagger;
+using Microsoft.EntityFrameworkCore;
+using TrainChecker.Data;
 
 namespace TrainChecker;
 
@@ -82,11 +84,14 @@ public class Program
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"]!,
+                    ValidAudience = builder.Configuration["Jwt:Audience"]!,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
                 };
             });
+
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services.AddQuartz(q =>
         {
@@ -136,6 +141,13 @@ public class Program
         app.UseAuthorization();
         
         app.MapControllers();
+
+        // Apply migrations on startup
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            dbContext.Database.Migrate();
+        }
 
         app.Run();
     }
