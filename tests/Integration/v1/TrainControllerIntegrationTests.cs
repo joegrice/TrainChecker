@@ -11,14 +11,15 @@ using TrainChecker.Services.Telegram;
 using Xunit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using TrainChecker.Tests.Helpers;
 
 namespace TrainChecker.Tests.Integration.v1;
 
-public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+public class TrainControllerIntegrationTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {
-    private readonly WebApplicationFactory<Program> _factory;
+    private readonly CustomWebApplicationFactory<Program> _factory;
 
-    public TrainControllerIntegrationTests(WebApplicationFactory<Program> factory)
+    public TrainControllerIntegrationTests(CustomWebApplicationFactory<Program> factory)
     {
         _factory = factory;
     }

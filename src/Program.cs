@@ -93,8 +93,11 @@ public class Program
                 });
         }
 
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        if (!builder.Environment.IsEnvironment("IntegrationTests"))
+        {
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        }
 
         builder.Services.AddQuartz(q =>
         {
