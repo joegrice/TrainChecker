@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   trainchecker:
     image: joegrice/trainchecker:latest
@@ -12,3 +10,36 @@ services:
       - ASPNETCORE_URLS=http://+:8080
       - TZ=Europe/London
     restart: unless-stopped
+    depends_on:
+      - trainchecker-users-db
+
+  trainchecker-users-db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    env_file:
+      - .env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    restart: unless-stopped
+    depends_on:
+      - trainchecker-users-db
+
+volumes:
+  db_data:

@@ -1,3 +1,6 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Quartz;
 using TrainChecker.Configuration;
 using TrainChecker.Jobs;
@@ -5,6 +8,8 @@ using TrainChecker.Services.NationalRail;
 using TrainChecker.Services.Telegram;
 using TrainChecker.Services.Train;
 using TrainChecker.Swagger;
+using Microsoft.EntityFrameworkCore;
+using TrainChecker.Data;
 
 namespace TrainChecker;
 
@@ -66,6 +71,34 @@ public class Program
         builder.Services.AddHttpClient<ITelegramService, TelegramService>();
         builder.Services.AddScoped<ITrainService, TrainService>();
 
+        if (!builder.Environment.IsEnvironment("IntegrationTests"))
+        {
+            builder.Services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"]!,
+                        ValidAudience = builder.Configuration["Jwt:Audience"]!,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+                    };
+                });
+        }
+
+        if (!builder.Environment.IsEnvironment("IntegrationTests"))
+        {
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        }
+
         builder.Services.AddQuartz(q =>
         {
             var forwardJobKey = new JobKey("TrainCheckJobForward");
@@ -107,9 +140,33 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+        else
+        {
+            app.UseExceptionHandler("/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+        }
 
         app.UseCors(myAllowSpecificOrigins);
+        
+        app.UseAuthentication();
+        app.UseAuthorization();
+        
         app.MapControllers();
+
+        app.MapGet("/Error", () => Results.Problem())
+            .ExcludeFromDescription();
+
+        // Apply migrations on startup, but not for integration tests
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            if (!app.Environment.IsEnvironment("IntegrationTests"))
+            {
+                dbContext.Database.Migrate();
+            }
+        }
 
         app.Run();
     }
