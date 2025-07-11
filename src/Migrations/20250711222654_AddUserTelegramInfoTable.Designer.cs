@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TrainChecker.Data;
@@ -11,9 +12,11 @@ using TrainChecker.Data;
 namespace TrainChecker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250711222654_AddUserTelegramInfoTable")]
+    partial class AddUserTelegramInfoTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,33 +52,6 @@ namespace TrainChecker.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("TrainChecker.Models.UserPreferences", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsTelegramEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserPreferences");
-                });
-
             modelBuilder.Entity("TrainChecker.Models.UserTelegramInfo", b =>
                 {
                     b.Property<int>("Id")
@@ -90,8 +66,11 @@ namespace TrainChecker.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("EncryptedBotToken")
+                    b.Property<string>("EncryptedPassword")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TelegramUsername")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -106,17 +85,6 @@ namespace TrainChecker.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserTelegramInfo");
-                });
-
-            modelBuilder.Entity("TrainChecker.Models.UserPreferences", b =>
-                {
-                    b.HasOne("TrainChecker.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TrainChecker.Models.UserTelegramInfo", b =>

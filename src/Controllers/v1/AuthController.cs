@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using TrainChecker.Data;
 using TrainChecker.Models;
+using TrainChecker.Models.DTOs;
 
 namespace TrainChecker.Controllers.v1;
 
@@ -56,11 +57,11 @@ public class AuthController : ControllerBase
         user.LastLoggedIn = DateTime.UtcNow;
         await _context.SaveChangesAsync();
 
-        var token = GenerateJwtToken(user.Email);
-        return Ok(new LoginResponse { Token = token });
+        var token = GenerateJwtToken(user.Email, user.Id);
+        return Ok(new AuthLoginResponse { Token = token, UserId = user.Id, Email = user.Email });
     }
 
-    private string GenerateJwtToken(string email)
+    private string GenerateJwtToken(string email, int userId)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -68,7 +69,8 @@ public class AuthController : ControllerBase
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim("userId", userId.ToString())
         };
 
         var token = new JwtSecurityToken(
