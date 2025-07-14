@@ -37,6 +37,11 @@ namespace TrainChecker.Data
                       .HasForeignKey(d => d.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
+
+            modelBuilder.Entity<UserPreferences>()
+                .HasOne(up => up.UserTelegramInfo)
+                .WithOne(uti => uti.UserPreferences)
+                .HasForeignKey<UserTelegramInfo>(uti => uti.UserPreferencesId);
         }
     }
 }

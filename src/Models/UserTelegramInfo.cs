@@ -13,6 +13,8 @@ namespace TrainChecker.Models
         [Required]
         public int UserId { get; set; }
 
+        public int? UserPreferencesId { get; set; } 
+
         [Required]
         public long ChatId { get; set; }
 
@@ -26,5 +28,8 @@ namespace TrainChecker.Models
 
         [ForeignKey("UserId")]
         public User User { get; set; }
+
+        [ForeignKey("UserPreferencesId")]
+        public UserPreferences UserPreferences { get; set; } // Navigation property to UserPreferences
     }
 }

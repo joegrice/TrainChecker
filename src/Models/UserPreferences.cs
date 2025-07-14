@@ -21,5 +21,7 @@ namespace TrainChecker.Models
 
         [ForeignKey("UserId")]
         public User User { get; set; }
+
+        public UserTelegramInfo? UserTelegramInfo { get; set; } // Added navigation property
     }
 }

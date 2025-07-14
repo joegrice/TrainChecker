@@ -8,5 +8,8 @@ namespace TrainChecker.Models.DTOs
         public int UserId { get; set; }
 
         public bool IsTelegramEnabled { get; set; }
+
+        public long ChatId { get; set; }
+        public string? BotToken { get; set; }
     }
 }
