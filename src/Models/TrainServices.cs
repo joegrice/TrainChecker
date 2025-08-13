@@ -36,6 +36,9 @@ public class TrainService
 
     [JsonPropertyName("operator")]
     public string? Operator { get; set; }
+
+    [JsonPropertyName("length")]
+    public int? Length { get; set; }
 }
 
 public class Location

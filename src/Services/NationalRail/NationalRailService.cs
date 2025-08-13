@@ -1,10 +1,15 @@
 using System.Net.Http.Headers;
-using System.Text.Json;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using TrainChecker.Configuration;
 using TrainChecker.Models;
 
 namespace TrainChecker.Services.NationalRail;
+
+public interface INationalRailService
+{
+    Task<HuxleyResponse?> GetTrainStatusAsync(string time, string departureStation, string arrivalStation);
+}
 
 public class NationalRailService : INationalRailService
 {
@@ -12,7 +17,10 @@ public class NationalRailService : INationalRailService
     private readonly TrainCheckerOptions _options;
     private readonly ILogger<NationalRailService> _logger;
 
-    public NationalRailService(HttpClient httpClient, IOptions<TrainCheckerOptions> options, ILogger<NationalRailService> logger)
+    public NationalRailService(
+        HttpClient httpClient, 
+        IOptions<TrainCheckerOptions> options, 
+        ILogger<NationalRailService> logger)
     {
         _httpClient = httpClient;
         _options = options.Value;
@@ -23,7 +31,7 @@ public class NationalRailService : INationalRailService
     public async Task<HuxleyResponse?> GetTrainStatusAsync(string time, string departureStation, string arrivalStation)
     {
         var requestUri = $"/departures/{departureStation}/to/{arrivalStation}?accessToken={_options.ApiKey}&time={time}&timeWindow=60&expand=true";
-        var redactedRequestUri = System.Text.RegularExpressions.Regex.Replace(requestUri, "accessToken=[^&]*", "accessToken=********");
+        var redactedRequestUri = Regex.Replace(requestUri, "accessToken=[^&]*", "accessToken=********");
         _logger.LogInformation("Requesting train status from: {BaseAddress}{RequestUri}", _httpClient.BaseAddress, redactedRequestUri);
         
         var response = await _httpClient.GetAsync(requestUri);
@@ -35,7 +43,7 @@ public class NationalRailService : INationalRailService
         }
         
         response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<HuxleyResponse>(content);
+        
+        return await response.Content.ReadFromJsonAsync<HuxleyResponse>();
     }
 }
