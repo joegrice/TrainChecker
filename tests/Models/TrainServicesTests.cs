@@ -14,18 +14,19 @@ public class TrainServicesTests
         {
             OriginName = "London Euston",
             Crs = "EUS",
-            TrainServices = new[]
-            {
+            TrainServices =
+            [
                 new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "On time",
                     Platform = "1",
                     Operator = "Avanti West Coast",
-                    Origin = new[] { new Location { LocationName = "London Euston", Crs = "EUS" } },
-                    Destination = new[] { new Location { LocationName = "Birmingham New Street", Crs = "BHM" } }
+                    Origin = [new Location { LocationName = "London Euston", Crs = "EUS" }],
+                    Destination = [new Location { LocationName = "Birmingham New Street", Crs = "BHM" }],
+                    Length = 5
                 }
-            }
+            ]
         };
 
         // Act
@@ -45,6 +46,7 @@ public class TrainServicesTests
         Assert.Equal(originalService.EstimatedTimeOfDeparture, deserializedService.EstimatedTimeOfDeparture);
         Assert.Equal(originalService.Platform, deserializedService.Platform);
         Assert.Equal(originalService.Operator, deserializedService.Operator);
+        Assert.Equal(originalService.Length, deserializedService.Length);
     }
 
     [Fact]
@@ -77,8 +79,8 @@ public class TrainServicesTests
             ScheduledTimeOfDeparture = "08:30",
             EstimatedTimeOfDeparture = "On time",
             Platform = "1",
-            Origin = Array.Empty<Location>(),
-            Destination = Array.Empty<Location>()
+            Origin = [],
+            Destination = []
         };
 
         // Act & Assert
@@ -141,15 +143,15 @@ public class TrainServicesTests
         {
             OriginName = "Test Location",
             Crs = "TST",
-            TrainServices = new[]
-            {
+            TrainServices =
+            [
                 new TrainService
                 {
                     ScheduledTimeOfDeparture = "08:30",
                     EstimatedTimeOfDeparture = "On time",
                     Platform = "1"
                 }
-            }
+            ]
         };
 
         // Act
