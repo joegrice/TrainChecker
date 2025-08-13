@@ -72,6 +72,7 @@ public class Program
         });
             
         builder.Services.AddHttpClient<ITelegramService, TelegramService>();
+        builder.Services.AddScoped<ITelegramValidationService, TelegramValidationService>(); // Register new service
         builder.Services.AddScoped<ITrainService, TrainService>();
 
         if (!builder.Environment.IsEnvironment("IntegrationTests"))
