@@ -40,12 +40,8 @@ public class TrainService(INationalRailService nationalRailService, ITelegramSer
                 var platform = !string.IsNullOrEmpty(trainService.Platform)
                     ? $" (Platform {trainService.Platform})"
                     : "";
-                
-                var trainLength = trainService.Length is not null
-                    ? $" ({trainService.Length} Coaches)"
-                    : "";
 
-                message.AppendLine($"- *{trainService.ScheduledTimeOfDeparture}* from *{origin}*{platform} to *{destination}{trainLength}*: {statusText}");
+                message.AppendLine($"- *{trainService.ScheduledTimeOfDeparture}* from *{origin}*{platform} to *{destination}*: {statusText}");
             }
             await telegramService.SendMessageAsync(message.ToString());
         }
