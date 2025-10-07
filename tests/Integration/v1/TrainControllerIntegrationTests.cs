@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text.Json;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -9,14 +8,19 @@ using Moq.Protected;
 using TrainChecker.Models;
 using TrainChecker.Services.NationalRail;
 using TrainChecker.Services.Telegram;
-using TrainChecker.Tests.Helpers;
 using Xunit;
 
 namespace TrainChecker.Tests.Integration.v1;
 
-public class TrainControllerIntegrationTests(CustomWebApplicationFactory<Program> factory)
-    : IClassFixture<CustomWebApplicationFactory<Program>>
+public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 {
+    private readonly WebApplicationFactory<Program> _factory;
+
+    public TrainControllerIntegrationTests(WebApplicationFactory<Program> factory)
+    {
+        _factory = factory;
+    }
+
     [Fact]
     public async Task GetTrainStatus_WithMockedServices_ReturnsExpectedResponse()
     {
@@ -68,7 +72,7 @@ public class TrainControllerIntegrationTests(CustomWebApplicationFactory<Program
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(telegramResponse);
 
-        var client = factory.WithWebHostBuilder(builder =>
+        var client = _factory.WithWebHostBuilder(builder =>
         {
             builder.ConfigureAppConfiguration((context, config) =>
             {
@@ -125,37 +129,11 @@ public class TrainControllerIntegrationTests(CustomWebApplicationFactory<Program
     public async Task GetTrainStatus_WithoutConfiguration_Returns500()
     {
         // Arrange
-        var client = factory.WithWebHostBuilder(builder =>
+        var client = _factory.WithWebHostBuilder(builder =>
         {
-            builder.UseEnvironment("IntegrationTests"); // Set environment for this test
             builder.ConfigureAppConfiguration((context, config) =>
             {
                 config.Sources.Clear(); // Remove all configuration sources
-            });
-            builder.ConfigureServices(services =>
-            {
-                // Disable authentication for this test
-                services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
-                {
-                    options.TokenValidationParameters.ValidateIssuer = false;
-                    options.TokenValidationParameters.ValidateAudience = false;
-                    options.TokenValidationParameters.ValidateLifetime = false;
-                    options.TokenValidationParameters.ValidateIssuerSigningKey = false;
-                    options.TokenValidationParameters.RequireExpirationTime = false;
-                    options.TokenValidationParameters.RequireSignedTokens = false;
-                });
-
-                // Mock INationalRailService to throw an exception
-                var mockNationalRailService = new Mock<INationalRailService>();
-                mockNationalRailService.Setup(s => s.GetTrainStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                    .ThrowsAsync(new Exception("Simulated API call failure due to missing configuration."));
-
-                var nationalRailServiceDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(INationalRailService));
-                if (nationalRailServiceDescriptor != null)
-                {
-                    services.Remove(nationalRailServiceDescriptor);
-                }
-                services.AddSingleton(mockNationalRailService.Object);
             });
         }).CreateClient();
 
@@ -170,7 +148,7 @@ public class TrainControllerIntegrationTests(CustomWebApplicationFactory<Program
     public void Application_StartsSuccessfully()
     {
         // Arrange
-        var client = factory.WithWebHostBuilder(builder =>
+        var client = _factory.WithWebHostBuilder(builder =>
         {
             builder.ConfigureAppConfiguration((context, config) =>
             {
@@ -242,7 +220,7 @@ public class TrainControllerIntegrationTests(CustomWebApplicationFactory<Program
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(telegramResponse);
 
-        var client = factory.WithWebHostBuilder(builder =>
+        var client = _factory.WithWebHostBuilder(builder =>
         {
             builder.ConfigureAppConfiguration((context, config) =>
             {
@@ -298,7 +276,7 @@ public class TrainControllerIntegrationTests(CustomWebApplicationFactory<Program
     public async Task GetTrainStatusWithParameters_WithInvalidOrigin_ReturnsBadRequest()
     {
         // Arrange
-        var client = factory.WithWebHostBuilder(builder =>
+        var client = _factory.WithWebHostBuilder(builder =>
         {
             builder.ConfigureAppConfiguration((context, config) =>
             {
@@ -328,7 +306,7 @@ public class TrainControllerIntegrationTests(CustomWebApplicationFactory<Program
     public async Task GetTrainStatusWithParameters_WithInvalidDestination_ReturnsBadRequest()
     {
         // Arrange
-        var client = factory.WithWebHostBuilder(builder =>
+        var client = _factory.WithWebHostBuilder(builder =>
         {
             builder.ConfigureAppConfiguration((context, config) =>
             {
@@ -398,7 +376,7 @@ public class TrainControllerIntegrationTests(CustomWebApplicationFactory<Program
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(telegramResponse);
 
-        var client = factory.WithWebHostBuilder(builder =>
+        var client = _factory.WithWebHostBuilder(builder =>
         {
             builder.ConfigureAppConfiguration((context, config) =>
             {
