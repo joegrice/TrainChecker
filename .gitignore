@@ -58,6 +58,3 @@ nunit-*.xml
 
 # Mac
 .DS_Store
-
-# Config
-.env

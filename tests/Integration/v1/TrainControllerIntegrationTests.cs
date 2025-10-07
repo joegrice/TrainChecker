@@ -9,17 +9,14 @@ using TrainChecker.Models;
 using TrainChecker.Services.NationalRail;
 using TrainChecker.Services.Telegram;
 using Xunit;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using TrainChecker.Tests.Helpers;
 
 namespace TrainChecker.Tests.Integration.v1;
 
-public class TrainControllerIntegrationTests : IClassFixture<CustomWebApplicationFactory<Program>>
+public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 {
-    private readonly CustomWebApplicationFactory<Program> _factory;
+    private readonly WebApplicationFactory<Program> _factory;
 
-    public TrainControllerIntegrationTests(CustomWebApplicationFactory<Program> factory)
+    public TrainControllerIntegrationTests(WebApplicationFactory<Program> factory)
     {
         _factory = factory;
     }
@@ -134,35 +131,9 @@ public class TrainControllerIntegrationTests : IClassFixture<CustomWebApplicatio
         // Arrange
         var client = _factory.WithWebHostBuilder(builder =>
         {
-            builder.UseEnvironment("IntegrationTests"); // Set environment for this test
             builder.ConfigureAppConfiguration((context, config) =>
             {
                 config.Sources.Clear(); // Remove all configuration sources
-            });
-            builder.ConfigureServices(services =>
-            {
-                // Disable authentication for this test
-                services.PostConfigure<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
-                {
-                    options.TokenValidationParameters.ValidateIssuer = false;
-                    options.TokenValidationParameters.ValidateAudience = false;
-                    options.TokenValidationParameters.ValidateLifetime = false;
-                    options.TokenValidationParameters.ValidateIssuerSigningKey = false;
-                    options.TokenValidationParameters.RequireExpirationTime = false;
-                    options.TokenValidationParameters.RequireSignedTokens = false;
-                });
-
-                // Mock INationalRailService to throw an exception
-                var mockNationalRailService = new Mock<INationalRailService>();
-                mockNationalRailService.Setup(s => s.GetTrainStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                    .ThrowsAsync(new Exception("Simulated API call failure due to missing configuration."));
-
-                var nationalRailServiceDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(INationalRailService));
-                if (nationalRailServiceDescriptor != null)
-                {
-                    services.Remove(nationalRailServiceDescriptor);
-                }
-                services.AddSingleton(mockNationalRailService.Object);
             });
         }).CreateClient();
 
