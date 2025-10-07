@@ -1,18 +1,15 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Quartz;
 using TrainChecker.Configuration;
-using TrainChecker.Data;
 using TrainChecker.Jobs;
 using TrainChecker.Services.NationalRail;
 using TrainChecker.Services.Telegram;
 using TrainChecker.Services.Train;
 using TrainChecker.Swagger;
+using Microsoft.EntityFrameworkCore;
+using TrainChecker.Data;
 
 namespace TrainChecker;
 
@@ -46,12 +43,12 @@ public class Program
         {
             options.ReportApiVersions = true;
             options.AssumeDefaultVersionWhenUnspecified = true;
-            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
         });
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new OpenApiInfo
+            options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
             {
                 Version = "v1",
                 Title = "Train Checker API",
@@ -67,7 +64,7 @@ public class Program
         // Configure HttpClient with base address from configuration
         builder.Services.AddHttpClient<INationalRailService, NationalRailService>((serviceProvider, client) =>
         {
-            var trainCheckerOptions = serviceProvider.GetRequiredService<IOptions<TrainCheckerOptions>>().Value;
+            var trainCheckerOptions = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<TrainCheckerOptions>>().Value;
             client.BaseAddress = new Uri(trainCheckerOptions.BaseAddress);
         });
             
