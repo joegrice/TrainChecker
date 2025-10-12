@@ -3,12 +3,14 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Quartz;
 using TrainChecker.Configuration;
+using TrainChecker.Extensions;
 using TrainChecker.Helpers;
 using TrainChecker.Jobs;
 using TrainChecker.Services.NationalRail;
 using TrainChecker.Services.Telegram;
 using TrainChecker.Services.Train;
 using TrainChecker.Swagger;
+using QuartzOptions = TrainChecker.Configuration.QuartzOptions;
 
 namespace TrainChecker;
 
@@ -59,6 +61,7 @@ public class Program
         // Configure TrainChecker options first
         builder.Services.Configure<TrainCheckerOptions>(builder.Configuration.GetSection(TrainCheckerOptions.TrainChecker));
         builder.Services.Configure<TelegramOptions>(builder.Configuration.GetSection(TelegramOptions.Telegram));
+        builder.Services.Configure<QuartzOptions>(builder.Configuration.GetSection(QuartzOptions.Quartz));
             
         // Configure HttpClient with base address from configuration
         builder.Services.AddHttpClient<INationalRailService, NationalRailService>((serviceProvider, client) =>
@@ -72,33 +75,18 @@ public class Program
 
         builder.Services.AddQuartz(q =>
         {
-            var forwardJobKey = new JobKey("TrainCheckJobForward");
-            q.AddJob<TrainCheckJob>(opts => opts
-                .WithIdentity(forwardJobKey)
-                .UsingJobData("DepartureStation", builder.Configuration["TrainChecker:DepartureStation"])
-                .UsingJobData("ArrivalStation", builder.Configuration["TrainChecker:ArrivalStation"]));
-            q.AddTrigger(opts => opts
-                .ForJob(forwardJobKey)
-                .WithIdentity("TrainCheckJobForward-730am-trigger")
-                .WithCronSchedule("0 30 7 ? * MON-FRI *"));
-            q.AddTrigger(opts => opts
-                .ForJob(forwardJobKey)
-                .WithIdentity("TrainCheckJobForward-745am-trigger")
-                .WithCronSchedule("0 45 7 ? * MON-FRI *"));
-
-            var reverseJobKey = new JobKey("TrainCheckJobReverse");
-            q.AddJob<TrainCheckJob>(opts => opts
-                .WithIdentity(reverseJobKey)
-                .UsingJobData("DepartureStation", builder.Configuration["TrainChecker:ArrivalStation"])
-                .UsingJobData("ArrivalStation", builder.Configuration["TrainChecker:DepartureStation"]));
-            q.AddTrigger(opts => opts
-                .ForJob(reverseJobKey)
-                .WithIdentity("TrainCheckJobReverse-5pm-trigger")
-                .WithCronSchedule("0 0 17 ? * MON-FRI *"));
-            q.AddTrigger(opts => opts
-                .ForJob(reverseJobKey)
-                .WithIdentity("TrainCheckJobReverse-530pm-trigger")
-                .WithCronSchedule("0 30 17 ? * MON-FRI *"));
+            var trainCheckerOptions = builder.Configuration.GetSection(TrainCheckerOptions.TrainChecker).Get<TrainCheckerOptions>();
+            var quartzOptions = builder.Configuration.GetSection(QuartzOptions.Quartz).Get<QuartzOptions>();
+            
+            q.AddJobAndTriggers<TrainCheckJob>("TrainCheckJobForward", 
+                trainCheckerOptions.DepartureStation,
+                trainCheckerOptions.ArrivalStation, 
+                quartzOptions.Forward.Schedules);
+            
+            q.AddJobAndTriggers<TrainCheckJob>("TrainCheckJobReverse", 
+                trainCheckerOptions.ArrivalStation,
+                trainCheckerOptions.DepartureStation, 
+                quartzOptions.Reverse.Schedules);
         });
 
         builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
