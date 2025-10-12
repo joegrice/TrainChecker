@@ -11,7 +11,7 @@ public class TrainService(INationalRailService nationalRailService, ITelegramSer
     public async Task<HuxleyResponse?> GetAndSendTrainStatusAsync(string departureStation, string arrivalStation)
     {
         var huxleyResponse = await nationalRailService.GetTrainStatusAsync(DateTime.Now.ToString("HH:mm"), departureStation, arrivalStation);
-        if (huxleyResponse?.TrainServices != null)
+        if (huxleyResponse?.TrainServices != null && huxleyResponse.TrainServices.Length != 0)
         {
             var message = new StringBuilder();
             message.AppendLine($"*Train Status Update for {huxleyResponse.OriginName} to {huxleyResponse.DestinationName}*");
@@ -44,6 +44,11 @@ public class TrainService(INationalRailService nationalRailService, ITelegramSer
                 message.AppendLine($"- *{trainService.ScheduledTimeOfDeparture}* from *{origin}*{platform} to *{destination}*: {statusText}");
             }
             await telegramService.SendMessageAsync(message.ToString());
+        }
+        else
+        {
+            var message = $"No train services found for {departureStation} to {arrivalStation}.";
+            await telegramService.SendMessageAsync(message);
         }
         return huxleyResponse;
     }

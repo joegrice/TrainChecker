@@ -11,12 +11,10 @@ namespace TrainChecker.Controllers.v1;
 public class TrainController(ITrainService trainService, IOptions<TrainCheckerOptions> options)
     : ControllerBase
 {
-    private readonly TrainCheckerOptions _options = options.Value;
-
     [HttpGet]
     public async Task<IActionResult> GetTrainStatus()
     {
-        var huxleyResponse = await trainService.GetAndSendTrainStatusAsync(_options.DepartureStation, _options.ArrivalStation);
+        var huxleyResponse = await trainService.GetAndSendTrainStatusAsync(options.Value.DepartureStation, options.Value.ArrivalStation);
         return Ok(huxleyResponse);
     }
 

@@ -9,4 +9,5 @@ public class TrainCheckerOptions
     public string ApiKey { get; set; } = string.Empty;
     public string Platform { get; set; } = string.Empty;
     public string BaseAddress { get; set; } = "";
+    public string Version { get; set; } = string.Empty;
 }
