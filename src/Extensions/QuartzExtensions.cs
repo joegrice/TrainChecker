@@ -10,7 +10,8 @@ public static class QuartzExtensions
         q.AddJob<T>(opts => opts
             .WithIdentity(jobKey)
             .UsingJobData("DepartureStation", departureStation)
-            .UsingJobData("ArrivalStation", arrivalStation));
+            .UsingJobData("ArrivalStation", arrivalStation)
+            .StoreDurably());
 
         foreach (var cronSchedule in cronSchedules)
         {

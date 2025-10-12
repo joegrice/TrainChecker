@@ -134,7 +134,7 @@ public class TrainServiceTests
     }
 
     [Fact]
-    public async Task GetAndSendTrainStatusAsync_WithNullResponse_DoesNotSendMessage()
+    public async Task GetAndSendTrainStatusAsync_WithNullResponse_SendsNoServicesMessage()
     {
         // Arrange
         var departureStation = "LDN";
@@ -149,11 +149,11 @@ public class TrainServiceTests
 
         // Assert
         Assert.Null(result);
-        _mockTelegramService.Verify(x => x.SendMessageAsync(It.IsAny<string>()), Times.Never);
+        _mockTelegramService.Verify(x => x.SendMessageAsync("No train services found for LDN to BHM."), Times.Once);
     }
 
     [Fact]
-    public async Task GetAndSendTrainStatusAsync_WithNullTrainServices_DoesNotSendMessage()
+    public async Task GetAndSendTrainStatusAsync_WithNullTrainServices_SendsNoServicesMessage()
     {
         // Arrange
         var departureStation = "LDN";
@@ -174,7 +174,7 @@ public class TrainServiceTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(huxleyResponse, result);
-        _mockTelegramService.Verify(x => x.SendMessageAsync(It.IsAny<string>()), Times.Never);
+        _mockTelegramService.Verify(x => x.SendMessageAsync("No train services found for LDN to BHM."), Times.Once);
     }
 
     [Fact]

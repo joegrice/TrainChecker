@@ -82,7 +82,9 @@ public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFacto
                     ["TrainChecker:ArrivalStation"] = "BHM",
                     ["TrainChecker:ApiKey"] = "test-api-key",
                     ["Telegram:BotToken"] = "test-bot-token",
-                    ["Telegram:ChatId"] = "test-chat-id"
+                    ["Telegram:ChatId"] = "test-chat-id",
+                    ["Quartz:Forward:Schedules:0"] = "0 30 7 ? * MON-FRI *",
+                    ["Quartz:Reverse:Schedules:0"] = "0 0 17 ? * MON-FRI *"
                 });
             });
 
@@ -148,20 +150,7 @@ public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFacto
     public void Application_StartsSuccessfully()
     {
         // Arrange
-        var client = _factory.WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureAppConfiguration((context, config) =>
-            {
-                config.AddInMemoryCollection(new Dictionary<string, string?>
-                {
-                    ["TrainChecker:DepartureStation"] = "EUS",
-                    ["TrainChecker:ArrivalStation"] = "BHM",
-                    ["TrainChecker:ApiKey"] = "test-api-key",
-                    ["Telegram:BotToken"] = "test-bot-token",
-                    ["Telegram:ChatId"] = "test-chat-id"
-                });
-            });
-        }).CreateClient();
+        var client = _factory.CreateClient();
 
         // Act & Assert
         Assert.NotNull(client);
@@ -229,7 +218,9 @@ public class TrainControllerIntegrationTests : IClassFixture<WebApplicationFacto
                     ["TrainChecker:BaseAddress"] = "https://huxley2.azurewebsites.net",
                     ["TrainChecker:ApiKey"] = "test-api-key",
                     ["Telegram:BotToken"] = "test-bot-token",
-                    ["Telegram:ChatId"] = "test-chat-id"
+                    ["Telegram:ChatId"] = "test-chat-id",
+                    ["Quartz:Forward:Schedules:0"] = "0 30 7 ? * MON-FRI *",
+                    ["Quartz:Reverse:Schedules:0"] = "0 0 17 ? * MON-FRI *"
                 });
             });
 
