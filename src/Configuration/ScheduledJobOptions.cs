@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainChecker.Configuration;
 
-public class QuartzOptions
+public class ScheduledJobOptions
 {
     public const string Quartz = "Quartz";
     
@@ -12,5 +12,6 @@ public class QuartzOptions
 
 public class CronSchedule
 {
-    [Required] public string[] Schedules { get; } = [];
+    [MinLength(1)]
+    public string[] Schedules { get; set; } = [];
 }
