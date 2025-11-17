@@ -1,5 +1,6 @@
 # Use the official .NET 9.0 SDK image for building
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+
 WORKDIR /app
 
 # Copy csproj and restore dependencies
@@ -15,14 +16,18 @@ RUN dotnet publish -c Release -o out --no-restore
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 
+# Accept version as build argument (only needed here)
+ARG VERSION=dev
+
 # Install tzdata and set timezone to London
 RUN apt-get update && apt-get install -y tzdata && \
     ln -fs /usr/share/zoneinfo/Europe/London /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     rm -rf /var/lib/apt/lists/*
 
-# Set environment variable for timezone
+# Set environment variables - VERSION is baked into the image
 ENV TZ=Europe/London
+ENV APP_VERSION=${VERSION}
 
 # Create a non-root user for security
 RUN adduser --disabled-password --gecos '' --shell /bin/bash --uid 1001 appuser
