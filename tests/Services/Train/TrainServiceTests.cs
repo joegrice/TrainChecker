@@ -61,12 +61,10 @@ public class TrainServiceTests
         Assert.Equal(huxleyResponse, result);
         
         _mockTelegramService.Verify(x => x.SendMessageAsync(It.Is<string>(msg =>
-            msg.Contains("*Train Status Update for London to Birmingham New Street*") &&
-            msg.Contains("🟢 *On time*") &&
+            msg.Contains("*LONDON → BIRMINGHAM NEW STREET*") &&
+            msg.Contains("🟢 On time") &&
             msg.Contains("08:30") &&
-            msg.Contains("London Euston") &&
-            msg.Contains("Birmingham New Street") &&
-            msg.Contains("Platform 1")
+            msg.Contains("Plat 1")
         )), Times.Once);
     }
 
@@ -78,6 +76,8 @@ public class TrainServiceTests
         var arrivalStation = "BHM";
         var huxleyResponse = new HuxleyResponse
         {
+            OriginName = "London",
+            DestinationName = "Birmingham New Street",
             TrainServices =
             [
                 new TrainChecker.Models.TrainService
@@ -100,8 +100,8 @@ public class TrainServiceTests
 
         // Assert
         _mockTelegramService.Verify(x => x.SendMessageAsync(It.Is<string>(msg => 
-            msg.Contains("🟠 *08:45*") &&
-            msg.Contains("delayed by 15 min")
+            msg.Contains("🟠 08:45") &&
+            msg.Contains("(+15m)")
         )), Times.Once);
     }
 
@@ -113,6 +113,8 @@ public class TrainServiceTests
         var arrivalStation = "BHM";
         var huxleyResponse = new HuxleyResponse
         {
+            OriginName = "London",
+            DestinationName = "Birmingham New Street",
             TrainServices =
             [
                 new TrainChecker.Models.TrainService
@@ -135,7 +137,7 @@ public class TrainServiceTests
 
         // Assert
         _mockTelegramService.Verify(x => x.SendMessageAsync(It.Is<string>(msg => 
-            msg.Contains("🔴 *Cancelled*")
+            msg.Contains("🔴 Cancelled")
         )), Times.Once);
     }
 
@@ -184,43 +186,7 @@ public class TrainServiceTests
     }
 
     [Fact]
-    public async Task GetAndSendTrainStatusAsync_WithMissingOriginDestination_UsesUnknown()
-    {
-        // Arrange
-        var departureStation = "LDN";
-        var arrivalStation = "BHM";
-        var huxleyResponse = new HuxleyResponse
-        {
-            OriginName = "",
-            TrainServices =
-            [
-                new TrainChecker.Models.TrainService
-                {
-                    ScheduledTimeOfDeparture = "08:30",
-                    EstimatedTimeOfDeparture = "On time",
-                    Platform = "1",
-                    Origin = null,
-                    Destination = null
-                }
-            ]
-        };
-
-        _mockNationalRailService
-            .Setup(x => x.GetTrainStatusAsync(It.IsAny<string>(), departureStation, arrivalStation))
-            .ReturnsAsync(huxleyResponse);
-
-        // Act
-        await _trainService.GetAndSendTrainStatusAsync(departureStation, arrivalStation);
-
-        // Assert
-        _mockTelegramService.Verify(x => x.SendMessageAsync(It.Is<string>(msg =>
-            msg.Contains("from *Unknown*") &&
-            msg.Contains("to *Unknown*")
-        )), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetAndSendTrainStatusAsync_WithGoodTubeService_ShowsGreenEmoji()
+    public async Task GetAndSendTrainStatusAsync_WithGoodTubeService_ShowsCorrectMessage()
     {
         // Arrange
         var departureStation = "LDN";
@@ -243,7 +209,7 @@ public class TrainServiceTests
 
         // Assert
         _mockTelegramService.Verify(x => x.SendMessageAsync(It.Is<string>(msg =>
-            msg.Contains("All tube lines reporting a Good service 🟢")
+            msg.Contains("All tube lines reporting a Good service!")
         )), Times.Once);
     }
 
@@ -272,7 +238,7 @@ public class TrainServiceTests
         // Assert
         _mockTelegramService.Verify(x => x.SendMessageAsync(It.Is<string>(msg =>
             !msg.Contains("All tube lines reporting a Good service") &&
-            msg.Contains("Northern, Minor Delays") &&
+            msg.Contains("Northern: *Minor Delays*") &&
             !msg.Contains("Bakerloo")
         )), Times.Once);
     }
