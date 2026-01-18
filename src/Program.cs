@@ -8,6 +8,7 @@ using TrainChecker.Helpers;
 using TrainChecker.Jobs;
 using TrainChecker.Services.NationalRail;
 using TrainChecker.Services.Telegram;
+using TrainChecker.Services.Tfl;
 using TrainChecker.Services.Train;
 using TrainChecker.Swagger;
 
@@ -41,17 +42,23 @@ public class Program
         // Configure options
         builder.Services.AddOptions<TrainCheckerOptions>()
             .BindConfiguration(TrainCheckerOptions.TrainChecker);
+        builder.Services.AddOptions<TubeCheckerOptions>()
+            .BindConfiguration(TubeCheckerOptions.TubeChecker);
         builder.Services.AddOptions<TelegramOptions>()
             .BindConfiguration(TelegramOptions.Telegram);
-        builder.Services.AddOptions<ScheduledJobOptions>()
+        builder.Services.AddOptionsWithValidateOnStart<ScheduledJobOptions>()
             .BindConfiguration(ScheduledJobOptions.Quartz)
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+            .ValidateDataAnnotations();
             
         // Configure HttpClient with base address from configuration
         builder.Services.AddHttpClient<INationalRailService, NationalRailService>((serviceProvider, client) =>
         {
             client.BaseAddress = new Uri(serviceProvider.GetRequiredService<IOptions<TrainCheckerOptions>>().Value.BaseAddress);
+        });
+        
+        builder.Services.AddHttpClient<ITflService, TflService>((serviceProvider, client) =>
+        {
+            client.BaseAddress = new Uri(serviceProvider.GetRequiredService<IOptions<TubeCheckerOptions>>().Value.BaseAddress);
         });
             
         builder.Services.AddHttpClient<ITelegramService, TelegramService>();

@@ -16,8 +16,8 @@ public class SwaggerDefaultValues : IOperationFilter
         foreach (var responseType in context.ApiDescription.SupportedResponseTypes)
         {
             var responseKey = responseType.IsDefaultResponse ? "default" : responseType.StatusCode.ToString();
-            var response = new OpenApiResponse();
-            response.Content.Add("application/json", new OpenApiMediaType());
+            var response = operation.Responses.TryGetValue(responseKey, out var operationResponse) ? operationResponse : new OpenApiResponse();
+            
             operation.Responses.TryAdd(responseKey, response);
         }
 
@@ -28,7 +28,12 @@ public class SwaggerDefaultValues : IOperationFilter
 
         foreach (var parameter in operation.Parameters)
         {
-            var description = apiDescription.ParameterDescriptions.First(p => p.Name == parameter.Name);
+            var description = apiDescription.ParameterDescriptions.FirstOrDefault(p => p.Name == parameter.Name);
+
+            if (description == null)
+            {
+                continue;
+            }
 
             if (parameter.Description == null)
             {

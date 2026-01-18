@@ -4,6 +4,11 @@ using TrainChecker.Configuration;
 
 namespace TrainChecker.Services.Telegram;
 
+public interface ITelegramService
+{
+    Task SendMessageAsync(string message);
+}
+
 public class TelegramService : ITelegramService
 {
     private readonly HttpClient _httpClient;

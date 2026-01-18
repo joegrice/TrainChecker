@@ -6,9 +6,9 @@ This project is a .NET 9.0 application that checks train times and sends notific
 
 - Scheduled train checking using Quartz.NET
 - Telegram notifications for train updates
-- RESTful API endpoints for train information
 - Docker support for easy deployment
 - Configurable departure and arrival stations
+- Tube status updates from TFL
 
 ## Configuration
 
@@ -19,7 +19,8 @@ To run this application, you need to configure the following values:
 - **TrainChecker:DepartureStation**: Your departure station code
 - **TrainChecker:ArrivalStation**: Your arrival station code
 - **TrainChecker:ApiKey**: Your API key for the train information service (see [Huxley2 API](https://huxley2.azurewebsites.net/))
-- **Cors:AllowedOrigins**: Array of allowed frontend origins for CORS (Cross-Origin Resource Sharing)
+- **TubeChecker:AppKey**: Your TFL App Key.
+- **TubeChecker:AppId**: Your TFL App ID.
 
 ### Configuration Methods
 
@@ -31,14 +32,13 @@ To run this application, you need to configure the following values:
     "ArrivalStation": "VIC",
     "ApiKey": "YOUR_API_KEY"
   },
+  "TubeChecker": {
+    "AppKey": "YOUR_TFL_APP_KEY",
+    "AppId": "YOUR_TFL_APP_ID"
+  },
   "Telegram": {
     "BotToken": "YOUR_TELEGRAM_BOT_TOKEN",
     "ChatId": "YOUR_TELEGRAM_CHAT_ID"
-  },
-  "Cors": {
-    "AllowedOrigins": [
-      "http://localhost:5173"
-    ]
   }
 }
 ```
@@ -48,14 +48,11 @@ To run this application, you need to configure the following values:
 TrainChecker__DepartureStation=CHE
 TrainChecker__ArrivalStation=VIC
 TrainChecker__ApiKey=YOUR_API_KEY
+TubeChecker__AppKey=YOUR_TFL_APP_KEY
+TubeChecker__AppId=YOUR_TFL_APP_ID
 Telegram__BotToken=YOUR_TELEGRAM_BOT_TOKEN
 Telegram__ChatId=YOUR_TELEGRAM_CHAT_ID
-Cors__AllowedOrigins__0=http://localhost:5173
 ```
-
-### CORS Configuration
-
-The application includes CORS (Cross-Origin Resource Sharing) support to allow frontend applications to access the API from different origins. Configure the `Cors:AllowedOrigins` setting with the URLs of your frontend applications.
 
 ## Running the Application
 
@@ -92,11 +89,6 @@ docker run -d --name trainchecker -p 8080:8080 --env-file .env joegrice/trainche
 ```
 
 For GitHub Actions setup to automatically publish releases, see [GITHUB_ACTIONS.md](GITHUB_ACTIONS.md).
-
-## API Endpoints
-
-The application exposes RESTful endpoints for train information:
-- `GET /api/train` - Get train information
 
 ## Scheduled Jobs
 
